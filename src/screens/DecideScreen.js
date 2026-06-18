@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed, uid } from '../state';
 import { Card, SectionTitle, Button, Input, Row, Empty } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -73,7 +74,11 @@ export default function DecideScreen() {
   const resultColors = { yes: colors.success, no: colors.danger, maybe: colors.warning };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>Smart Advisor</Text>
       <Text style={s.sub}>Ask FinyWise whether you can afford something — right now.</Text>
 
@@ -147,13 +152,18 @@ export default function DecideScreen() {
           <Text style={s.resultMsg}>{result.msg}</Text>
         </View>
       )}
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container:        { flex: 1, backgroundColor: colors.bg },
-  scroll:           { padding: spacing.xl, paddingBottom: 40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title:            { fontSize: 22, fontWeight: '700', color: colors.text, marginBottom: 4 },
   sub:              { fontSize: 13, color: colors.muted, marginBottom: 20, lineHeight: 20 },
   tabs:             { flexDirection: 'row', backgroundColor: colors.surface2, borderRadius: 10, padding: 3, marginBottom: 16, gap: 2 },

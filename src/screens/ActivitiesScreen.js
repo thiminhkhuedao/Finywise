@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed, uid, today } from '../state';
 import { Card, SectionTitle, Button, Input, Row, Empty } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -37,7 +38,11 @@ export default function ActivitiesScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Row style={{ justifyContent: 'space-between', marginBottom: 16 }}>
         <Text style={s.title}>Activities</Text>
         <Button label="+ Add" size="sm" onPress={() => setShowAdd(true)}/>
@@ -95,13 +100,18 @@ export default function ActivitiesScreen({ navigation }) {
           </Row>
         </View></View>
       </Modal>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  scroll:    { padding: spacing.xl, paddingBottom: 40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title:     { fontSize: 22, fontWeight: '700', color: colors.text },
   tabs:      { flexDirection: 'row', backgroundColor: colors.surface2, borderRadius: 10, padding: 3, marginBottom: 16, gap: 2 },
   tab:       { flex: 1, paddingVertical: 8, borderRadius: 8, alignItems: 'center' },

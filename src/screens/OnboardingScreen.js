@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, uid } from '../state';
 import { Input, Button, Card } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -23,7 +24,11 @@ export default function OnboardingScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={s.hero}>
         <Text style={s.icon}>✦</Text>
         <Text style={s.title}>Welcome to FinyWise</Text>
@@ -44,13 +49,18 @@ export default function OnboardingScreen({ navigation }) {
         <Button label="Get started →" onPress={submit}/>
       </Card>
       <Text style={s.note}>Data stays on your device. No account needed.</Text>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container:           { flex: 1, backgroundColor: colors.bg },
-  scroll:              { padding: spacing.xl, paddingTop: 60 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   hero:                { alignItems: 'center', marginBottom: 28 },
   icon:                { fontSize: 52, marginBottom: 14 },
   title:               { fontSize: 26, fontWeight: '700', color: colors.text, marginBottom: 8, textAlign: 'center' },

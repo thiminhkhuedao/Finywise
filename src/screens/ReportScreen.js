@@ -34,7 +34,11 @@ export default function ReportScreen({ navigation }) {
   const pct = (a,b) => !b ? 0 : Math.min(100,Math.round((a/b)*100));
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={s.headerRow}>
         <Text style={s.title}>Monthly Report</Text>
         <Button label="Share 📤" variant="secondary" size="sm" onPress={handleShare}/>
@@ -122,13 +126,18 @@ export default function ReportScreen({ navigation }) {
           </View>
         </View>
       </View>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex:1, backgroundColor:colors.bg },
-  scroll: { padding:spacing.xl, paddingBottom:40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   headerRow: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginBottom:16 },
   title: { fontSize:22, fontWeight:'700', color:colors.text },
   reportCard: { backgroundColor:colors.surface, borderWidth:1, borderColor:colors.border, borderRadius:radius.md, overflow:'hidden' },

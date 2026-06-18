@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, Empty, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -96,8 +97,12 @@ export default function GoalsScreen({ navigation }) {
     return colors.success;
   };
 
-  return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+return (
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>Savings Goals</Text>
       <Text style={s.sub}>Track what you're saving toward. Get warnings if you fall behind.</Text>
       <Button label="+ Add goal" variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
@@ -152,13 +157,18 @@ export default function GoalsScreen({ navigation }) {
       )}
 
       <AddGoalModal visible={showAdd} onClose={() => setShowAdd(false)} onSave={handleAdd}/>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex:1, backgroundColor:colors.bg },
-  scroll: { padding:spacing.xl, paddingBottom:40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title: { fontSize:22, fontWeight:'700', color:colors.text, marginBottom:4 },
   sub: { fontSize:13, color:colors.muted, marginBottom:20, lineHeight:20 },
   goalCard: { marginBottom:12, borderLeftWidth:4, borderLeftColor:colors.success },

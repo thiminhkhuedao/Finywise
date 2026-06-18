@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, TipBox, Row } from '../components/UI';
@@ -202,7 +203,11 @@ export default function SubscriptionsScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>Subscriptions</Text>
       <Text style={s.sub}>Track every subscription. Kill the ones you don't use.</Text>
 
@@ -238,13 +243,18 @@ export default function SubscriptionsScreen({ navigation }) {
 
       <AddSubModal visible={showAdd} onClose={()=>setShowAdd(false)} onSave={handleAdd}/>
       <ScriptModal {...scriptModal} onClose={()=>setScriptModal({...scriptModal,visible:false})}/>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex:1, backgroundColor:colors.bg },
-  scroll: { padding:spacing.xl, paddingBottom:40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title: { fontSize:22, fontWeight:'700', color:colors.text, marginBottom:4 },
   sub: { fontSize:13, color:colors.muted, marginBottom:20, lineHeight:20 },
   summaryCard: { backgroundColor:'#1e1a3a', borderWidth:1, borderColor:'#3a3560', borderRadius:radius.md, padding:18, marginBottom:16 },

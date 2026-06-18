@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppState } from '../state';
 import { SectionTitle } from '../components/UI';
@@ -28,7 +29,11 @@ export default function MoreScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>More</Text>
       <Text style={s.sub}>All FinyWise features</Text>
 
@@ -50,13 +55,18 @@ export default function MoreScreen({ navigation }) {
       <TouchableOpacity style={s.resetBtn} onPress={resetAll}>
         <Text style={s.resetText}>Reset all data</Text>
       </TouchableOpacity>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container:  { flex: 1, backgroundColor: colors.bg },
-  scroll:     { padding: spacing.xl, paddingBottom: 40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title:      { fontSize: 22, fontWeight: '700', color: colors.text, marginBottom: 4 },
   sub:        { fontSize: 13, color: colors.muted, marginBottom: 20 },
   menuCard:   { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: 14, marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 14 },

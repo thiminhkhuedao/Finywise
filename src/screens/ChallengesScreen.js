@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';s
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, TipBox } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -33,7 +34,11 @@ export default function ChallengesScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>Challenges</Text>
       <Text style={s.sub}>Take on a spending challenge to build better habits.</Text>
 
@@ -105,13 +110,18 @@ export default function ChallengesScreen({ navigation }) {
           </View>
         </Card>
       ))}
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex:1, backgroundColor:colors.bg },
-  scroll: { padding:spacing.xl, paddingBottom:40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title: { fontSize:22, fontWeight:'700', color:colors.text, marginBottom:4 },
   sub: { fontSize:13, color:colors.muted, marginBottom:20, lineHeight:20 },
   streakBanner: { backgroundColor:'rgba(124,106,247,0.12)', borderWidth:1, borderColor:'rgba(124,106,247,0.25)', borderRadius:radius.md, padding:16, marginBottom:16, flexDirection:'row', alignItems:'center', gap:14 },

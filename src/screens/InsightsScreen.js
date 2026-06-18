@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, Empty, TipBox } from '../components/UI';
 import { colors, spacing } from '../theme';
@@ -26,7 +27,11 @@ export default function InsightsScreen() {
   const scoreColor = healthScore >= 70 ? colors.success : healthScore >= 40 ? colors.warning : colors.danger;
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>Insights</Text>
       <Text style={s.sub}>Month-to-date overview</Text>
 
@@ -100,13 +105,18 @@ export default function InsightsScreen() {
 
       <Button label="Reset all data" variant="danger" style={{ marginTop: 20 }}
         onPress={() => Alert.alert('Reset?','',[ {text:'Cancel',style:'cancel'}, {text:'Reset',style:'destructive',onPress:()=>dispatch({type:'RESET'})} ])}/>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  scroll:    { padding: spacing.xl, paddingBottom: 40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title:     { fontSize: 22, fontWeight: '700', color: colors.text, marginBottom: 4 },
   sub:       { fontSize: 12, color: colors.muted, marginBottom: 18 },
   statGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 14 },

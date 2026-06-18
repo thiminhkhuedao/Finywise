@@ -1,3 +1,4 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
 import { useAppState, useComputed, uid } from '../state';
@@ -60,7 +61,11 @@ export default function BudgetScreen({ navigation }) {
   const allTx = [...transactions].sort((a,b) => b.date.localeCompare(a.date));
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Row style={{ justifyContent: 'space-between', marginBottom: 16 }}>
         <Text style={s.title}>Budget</Text>
         <Button label="+ Add" size="sm" onPress={() => setShowAdd(true)}/>
@@ -124,14 +129,23 @@ export default function BudgetScreen({ navigation }) {
         );
       })}
 
-      <AddCatModal visible={showAdd} onClose={() => setShowAdd(false)} dispatch={dispatch}/>
+            <AddCatModal
+        visible={showAdd}
+        onClose={() => setShowAdd(false)}
+        dispatch={dispatch}
+      />
     </ScrollView>
-  );
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container:  { flex: 1, backgroundColor: colors.bg },
-  scroll:     { padding: spacing.xl, paddingBottom: 40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title:      { fontSize: 22, fontWeight: '700', color: colors.text },
   txRow:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: colors.border },
   overlay:    { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' },

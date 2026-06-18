@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, Empty, TipBox, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -72,7 +73,11 @@ export default function RecurringScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={s.title}>Recurring Expenses</Text>
       <Text style={s.sub}>Fixed expenses auto-deducted each month. Set once, forget them.</Text>
 
@@ -112,13 +117,18 @@ export default function RecurringScreen({ navigation }) {
       <TipBox>💡 Recurring expenses are automatically logged on the 1st of each month and show with a ↻ badge in your transactions.</TipBox>
 
       <RecurringModal visible={showAdd} onClose={() => setShowAdd(false)} onSave={handleAdd} budgets={state.budgets}/>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container: { flex:1, backgroundColor:colors.bg },
-  scroll: { padding:spacing.xl, paddingBottom:40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   title: { fontSize:22, fontWeight:'700', color:colors.text, marginBottom:4 },
   sub: { fontSize:13, color:colors.muted, marginBottom:20, lineHeight:20 },
   recurRow: { flexDirection:'row', alignItems:'center', gap:12, marginBottom:10 },

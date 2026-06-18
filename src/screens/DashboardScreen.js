@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed, uid, today } from '../state';
 import { Card, SectionTitle, Button, Input, Empty, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
@@ -87,7 +88,11 @@ export default function DashboardScreen({ navigation }) {
   const ac = availableBalance < 0 ? colors.danger : availableBalance < profile.monthlyIncome * 0.1 ? colors.warning : colors.success;
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+  <SafeAreaView style={s.container} edges={['top']}>
+    <ScrollView
+      contentContainerStyle={s.scroll}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={s.headerRow}>
         <View>
           <Text style={s.greeting}>Good day,</Text>
@@ -194,13 +199,18 @@ export default function DashboardScreen({ navigation }) {
 
       <Button label="+ Log a transaction" variant="secondary" onPress={() => setShowAddTx(true)} style={{ marginTop: 4 }}/>
       <AddTxModal visible={showAddTx} onClose={() => setShowAddTx(false)} budgets={budgets} dispatch={dispatch}/>
-    </ScrollView>
-  );
+        </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const s = StyleSheet.create({
   container:       { flex: 1, backgroundColor: colors.bg },
-  scroll:          { padding: spacing.xl, paddingBottom: 40 },
+  scroll: {
+  padding: spacing.xl,
+  paddingTop: spacing.xl + 8,
+  paddingBottom: 40,
+},
   headerRow:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 },
   greeting:        { fontSize: 12, color: colors.muted },
   name:            { fontSize: 20, fontWeight: '700', color: colors.text },
