@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { View, Text, TouchableOpacity, StyleSheet, } from 'react-native';
+import { SafeAreaProvider, SafeAreaView, } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 
@@ -41,7 +41,15 @@ const TAB_ICONS = {
 
 function CustomTabBar({ state, navigation }) {
   return (
-    <SafeAreaView edges={['bottom']} style={s.tabBar}>
+    <SafeAreaView
+  edges={['bottom']}
+  style={[
+    s.tabBar,
+    {
+      backgroundColor: colors.bg,
+    },
+  ]}
+>
       {state.routes.map((route, i) => {
         const focused = state.index === i;
 
@@ -82,7 +90,10 @@ function MoreStack() {
 
 function MainTabs() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+  tabBar={(props) => <CustomTabBar {...props} />}
+  screenOptions={{ headerShown: false }}
+>
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Budget" component={BudgetScreen} />
       <Tab.Screen name="Goals" component={GoalsScreen} />
@@ -144,3 +155,41 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const s = StyleSheet.create({
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: 8,
+    paddingBottom: 10,
+    minHeight: 70,
+  },
+
+  tabBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  tabIcon: {
+    fontSize: 20,
+    color: colors.muted,
+  },
+
+  tabIconActive: {
+    color: colors.accent,
+  },
+
+  tabLabel: {
+    fontSize: 10,
+    color: colors.muted,
+    marginTop: 2,
+  },
+
+  tabLabelActive: {
+    color: colors.accent,
+    fontWeight: '600',
+  },
+});

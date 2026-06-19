@@ -12,6 +12,44 @@ function AddCatModal({ visible, onClose, dispatch }) {
   const [icon, setIcon] = useState('📦');
   const [amount, setAmount] = useState('');
   const [color, setColor] = useState(COLORS[0]);
+  const [editingBudget, setEditingBudget] = useState(null);
+  const submit = () => {
+    if (!name.trim()) return Alert.alert('Enter a name.');
+    dispatch({ type: 'ADD_BUDGET', payload: { id: uid(), name: name.trim(), icon, allocated: parseFloat(amount)||0, spent: 0, color } });
+    setName(''); setIcon('📦'); setAmount(''); onClose();
+  };
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <View style={s.overlay}><View style={s.sheet}>
+        <View style={s.handle}/>
+        <Text style={s.sheetTitle}>New budget category</Text>
+        <Input label="Name" value={name} onChangeText={setName} placeholder="e.g. Health"/>
+        <Row style={{ gap: 10 }}>
+          <View style={{ flex: 1 }}><Input label="Icon" value={icon} onChangeText={setIcon} maxLength={2}/></View>
+          <View style={{ flex: 2 }}><Input label="Monthly budget" value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
+        </Row>
+        <Text style={s.label}>Color</Text>
+        <View style={s.colorRow}>
+          {COLORS.map(c => (
+            <TouchableOpacity key={c} onPress={() => setColor(c)}
+              style={[s.colorChip, { backgroundColor: c }, color===c && s.colorChipActive]}/>
+          ))}
+        </View>
+        <Row style={{ gap: 10 }}>
+          <Button label="Cancel" variant="secondary" style={{ flex: 1 }} onPress={onClose}/>
+          <Button label="Add" style={{ flex: 1 }} onPress={submit}/>
+        </Row>
+      </View></View>
+    </Modal>
+  );
+}
+
+function EditCatModal({ visible, onClose, dispatch }) {
+  const [name, setName] = useState('');
+  const [icon, setIcon] = useState('📦');
+  const [amount, setAmount] = useState('');
+  const [color, setColor] = useState(COLORS[0]);
+  const [editingBudget, setEditingBudget] = useState(null);
   const submit = () => {
     if (!name.trim()) return Alert.alert('Enter a name.');
     dispatch({ type: 'ADD_BUDGET', payload: { id: uid(), name: name.trim(), icon, allocated: parseFloat(amount)||0, spent: 0, color } });
@@ -47,6 +85,7 @@ export default function BudgetScreen({ navigation }) {
   const { state, dispatch } = useAppState();
   const { fmt } = useComputed();
   const [showAdd, setShowAdd] = useState(false);
+  const [editingBudget, setEditingBudget] = useState(null);
   const { budgets, transactions } = state;
   const totalAllocated = budgets.reduce((s,b)=>s+b.allocated,0);
   const income = state.profile.monthlyIncome || 0;
@@ -86,7 +125,8 @@ export default function BudgetScreen({ navigation }) {
         const p = !b.allocated ? 0 : Math.min(100, Math.round((b.spent/b.allocated)*100));
         const barColor = p>=90?colors.danger:p>=70?colors.warning:colors.accent2;
         return (
-          <Card key={b.id} style={{ marginBottom: 10 }}>
+          <TouchableOpacity key={b.id} activeOpacity={0.8} onPress={() => setEditingBudget(b)}>
+          <Card style={{ marginBottom: 10 }}>
             <Row style={{ justifyContent: 'space-between', marginBottom: 10 }}>
               <Row style={{ gap: 10, flex: 1 }}>
                 <View style={{ width: 36, height: 36, borderRadius: 9, backgroundColor: b.color+'22', alignItems: 'center', justifyContent: 'center' }}>
@@ -104,6 +144,7 @@ export default function BudgetScreen({ navigation }) {
             </View>
             <Text style={{ fontSize: 10, color: colors.muted, marginTop: 4, textAlign: 'right' }}>{p}%{p>=90?' — almost full!':''}</Text>
           </Card>
+</TouchableOpacity>
         );
       })}
 
