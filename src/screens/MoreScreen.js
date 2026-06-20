@@ -77,3 +77,8 @@ const s = StyleSheet.create({
   resetBtn:   { padding: 14, borderRadius: radius.sm, borderWidth: 1, borderColor: 'rgba(245,101,101,0.3)', backgroundColor: 'rgba(245,101,101,0.08)', alignItems: 'center' },
   resetText:  { fontSize: 14, color: colors.danger, fontWeight: '500' },
 });
+
+<Button
+  label="⚙ Settings"
+  onPress={() => navigation.navigate('Settings')}
+/>

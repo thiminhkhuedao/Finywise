@@ -27,6 +27,7 @@ import SplitScreen from './src/screens/SplitScreen';
 import ChallengesScreen from './src/screens/ChallengesScreen';
 import ReportScreen from './src/screens/ReportScreen';
 import InsightsScreen from './src/screens/InsightsScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -84,6 +85,7 @@ function MoreStack() {
       <Stack.Screen name="Challenges" component={ChallengesScreen} />
       <Stack.Screen name="Report" component={ReportScreen} />
       <Stack.Screen name="Insights" component={InsightsScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 }

@@ -5,7 +5,7 @@ const STORAGE_KEY = 'finywise_state_v1';
 
 const initialState = {
   loaded: false,
-  profile: { name: '', currency: '€', monthlyIncome: 0, savingsGoal: 20 },
+  profile: { name: '', currency: '€', monthlyIncome: 0, savingsGoal: 20, language: 'fr', },
   budgets: [],
   transactions: [],
   activities: [],
