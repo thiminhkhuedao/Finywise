@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed, uid, today } from '../state';
 import { Card, SectionTitle, Button, Input, Row, Empty } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
 
 export default function ActivitiesScreen({ navigation }) {
   const { state, dispatch } = useAppState();
@@ -14,6 +15,7 @@ export default function ActivitiesScreen({ navigation }) {
   const [cost, setCost] = useState('');
   const [date, setDate] = useState(today());
   const [notes, setNotes] = useState('');
+  const { t } = useTranslation();
 
   const { activities, budgets } = state;
   const planned = activities.filter(a => a.status === 'planned');
@@ -21,14 +23,14 @@ export default function ActivitiesScreen({ navigation }) {
   const items   = tab === 'planned' ? planned : done;
 
   const addActivity = () => {
-    if (!name.trim()) return Alert.alert('Enter a name.');
+    if (!name.trim()) return Alert.alert(t('activities.name'));
     const icons = ['🎯','🎉','🍽️','🎬','🏃','✈️','🛍️','🎸','🏖️','🎮'];
     dispatch({ type: 'ADD_ACTIVITY', payload: { id: uid(), name: name.trim(), icon: icons[Math.floor(Math.random()*icons.length)], cost: parseFloat(cost)||0, date, notes: notes.trim(), status: 'planned', categoryId: null } });
     setName(''); setCost(''); setNotes(''); setShowAdd(false);
   };
 
   const completeActivity = (a) => {
-    Alert.alert('Mark as done?', 'This will log the cost as a transaction.', [
+    Alert.alert('Mark as done?', t('activities.mark_done'), t('activities.mark_done_desc'), [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Done', onPress: () => {
         dispatch({ type: 'UPDATE_ACTIVITY', payload: { id: a.id, status: 'done' } });
@@ -44,19 +46,21 @@ export default function ActivitiesScreen({ navigation }) {
       showsVerticalScrollIndicator={false}
     >
       <Row style={{ justifyContent: 'space-between', marginBottom: 16 }}>
-        <Text style={s.title}>Activities</Text>
-        <Button label="+ Add" size="sm" onPress={() => setShowAdd(true)}/>
+        <Text style={s.title}>{t('activities.title')}</Text>
+        <Button label={t('activities.done_button')} size="sm" onPress={() => setShowAdd(true)} />
       </Row>
 
       <View style={s.tabs}>
-        {[['planned',`Planned (${planned.length})`],['done',`Done (${done.length})`]].map(([t,l]) => (
-          <TouchableOpacity key={t} style={[s.tab, tab===t&&s.tabActive]} onPress={() => setTab(t)}>
-            <Text style={[s.tabText, tab===t&&s.tabTextActive]}>{l}</Text>
+        {[['planned', `${t('activities.planned')} (${planned.length})`], ['done', `${t('activities.done')} (${done.length})`],].map(([t, l]) => (
+          <TouchableOpacity key={t} style={[s.tab, tab === t && s.tabActive]} onPress={() => setTab(t)}>
+            <Text style={[s.tabText, tab === t && s.tabTextActive]}>{l}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {!items.length && <Empty icon={tab==='planned'?'📅':'✅'} message={tab==='planned'?'No planned activities.\nTap + Add to plan one.':'No completed activities yet.'}/>}
+      {!items.length && (
+  <Empty
+    icon={tab === 'planned' ? '📅' : '✅'} message={  tab === 'planned' ? t('activities.no_planned')  : t('activities.no_done')    }/>)}
 
       {items.map(a => {
         const cat = budgets.find(b => b.id === a.categoryId);
@@ -68,8 +72,8 @@ export default function ActivitiesScreen({ navigation }) {
                   <Text style={{ fontSize: 20 }}>{a.icon||'🎯'}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontWeight: '500', fontSize: 14, color: colors.text }} numberOfLines={1}>{a.name}</Text>
-                  <Text style={{ fontSize: 11, color: colors.muted }}>{a.date}{cat?' · '+cat.name:''}</Text>
+                  <Text style={{ fontWeight: '500', fontSize: 14, color: colors.text }} numberOfLines={1}>{ a.name}</Text>
+                  <Text style={{ fontSize: 11, color: colors.muted }}>{a.date}{cat ? ' · ' + t(`budget.${cat.key}`) : ''}</Text>
                 </View>
               </Row>
               <Text style={{ fontWeight: '600', fontSize: 15, color: colors.text }}>{fmt(a.cost)}</Text>
@@ -77,8 +81,8 @@ export default function ActivitiesScreen({ navigation }) {
             {a.notes ? <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 12 }}>{a.notes}</Text> : null}
             <Row style={{ gap: 8 }}>
               {tab === 'planned' && <Button label="✓ Done" variant="success" size="sm" style={{ flex: 1 }} onPress={() => completeActivity(a)}/>}
-              <Button label="✕ Delete" variant="danger" size="sm" style={{ flex: 1 }}
-                onPress={() => { Alert.alert('Delete?','',[ {text:'Cancel',style:'cancel'}, {text:'Delete',style:'destructive',onPress:()=>dispatch({type:'DELETE_ACTIVITY',payload:a.id})} ]); }}/>
+              <Button label={t('activities.delete_button')}  variant="danger" size="sm" style={{ flex: 1 }}
+                onPress={() => { Alert.alert (t('activities.delete_confirm'),'',[ {text:'Cancel',style:'cancel'}, {text:'Delete',style:'destructive',onPress:()=>dispatch({type:'DELETE_ACTIVITY',payload:a.id})} ]); }}/>
             </Row>
           </Card>
         );
@@ -87,17 +91,17 @@ export default function ActivitiesScreen({ navigation }) {
       <Modal visible={showAdd} animationType="slide" transparent onRequestClose={() => setShowAdd(false)}>
         <View style={s.overlay}><View style={s.sheet}>
           <View style={s.handle}/>
-          <Text style={s.sheetTitle}>Plan an activity</Text>
-          <Input label="Activity name" value={name} onChangeText={setName} placeholder="e.g. Weekend trip"/>
+          <Text style={s.sheetTitle}>{t('activities.plan_title')}</Text>
+          <Input label={t('activities.name')} value={name} onChangeText={setName} placeholder={t('activities.name_placeholder')}/>
           <Row style={{ gap: 10 }}>
-            <View style={{ flex: 1 }}><Input label="Estimated cost" value={cost} onChangeText={setCost} keyboardType="numeric" placeholder="0"/></View>
-            <View style={{ flex: 1 }}><Input label="Date" value={date} onChangeText={setDate} placeholder="YYYY-MM-DD"/></View>
+            <View style={{ flex: 1 }}><Input label={t('activities.cost')} value={cost} onChangeText={setCost} keyboardType="numeric" placeholder="0"/></View>
+            <View style={{ flex: 1 }}><Input label={t('activities.date')} value={date} onChangeText={setDate} placeholder="YYYY-MM-DD"/></View>
           </Row>
-          <Input label="Notes (optional)" value={notes} onChangeText={setNotes} placeholder="Any details..."/>
+          <Input label={t('activities.notes')} value={notes} onChangeText={setNotes} placeholder={t('activities.notes_placeholder')}/>
           <Row style={{ gap: 10 }}>
-            <Button label="Cancel" variant="secondary" style={{ flex: 1 }} onPress={() => setShowAdd(false)}/>
-            <Button label="Save" style={{ flex: 1 }} onPress={addActivity}/>
-          </Row>
+            <Button label={t('common.cancel')} variant="secondary" style={{ flex: 1 }} onPress={() => setShowAdd(false)}/>
+            <Button label={t('activities.save')} style={{ flex: 1 }} onPress={addActivity}/>
+          </Row>  
         </View></View>
       </Modal>
         </ScrollView>

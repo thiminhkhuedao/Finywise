@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAppState, useComputed, uid } from '../state';
 import { Card, SectionTitle, Button, Input, Row, Empty } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
 
+
 export default function DecideScreen() {
+  const {t} = useTranslation();
   const { state, dispatch } = useAppState();
   const { availableBalance, savingsAmount, fmt } = useComputed();
   const { budgets, priceWatchlist } = state;
@@ -26,49 +29,48 @@ export default function DecideScreen() {
 
   const analyzeActivity = () => {
     const cost = parseFloat(actCost) || 0;
-    if (!actName.trim()) return Alert.alert('Enter an activity name.');
+    if (!actName.trim()) return Alert.alert(t('decide.enterActivity'));
     const cat = budgets.find(b => b.id === actCatId);
     const catRem = cat ? cat.allocated - cat.spent : Infinity;
     let v, type, msg;
-    if (cost === 0) { v="It's free!"; type='yes'; msg="This costs nothing — go enjoy yourself!"; }
-    else if (availableBalance <= 0) { v='Not recommended'; type='no'; msg=`You're already over budget by ${fmt(Math.abs(availableBalance))}.`; }
-    else if (cost > availableBalance) { v='Cannot afford this'; type='no'; msg=`This costs ${fmt(cost)} but you only have ${fmt(availableBalance)} left.`; }
-    else if (cat && cost > catRem) { v='Category over limit'; type='maybe'; msg=`Only ${fmt(catRem)} left in ${cat.name}.`; }
-    else if (cost / income > 0.15) { v='Think twice'; type='maybe'; msg=`${fmt(cost)} is over 15% of your income.`; }
-    else { v='Go for it! ✓'; type='yes'; msg=`You can comfortably afford this. You'll still have ${fmt(availableBalance - cost)} left!`; }
+    if (cost === 0) { v = t('decide.freeTitle'); type='yes'; msg = t('decide.freeMessage'); }
+    else if (availableBalance <= 0) { v = t('decide.notReccomended'); type='no'; msg=  t('decide.overBudget', { amount: fmt(Math.abs(availableBalance))}); }
+    else if (cost > availableBalance) { v = t('decide.cannotAfford'); type='no'; msg=t('decide.cannotAffordMessage', {cost: fmt(cost), remaining: fmt(availableBalance)});}
+    else if (cat && cost > catRem) { v = t('decide.categoryLimit'); type='maybe'; msg=t('decide.categoryMessage', { remaining: fmt(catRem), category: cat?.key ? t(`budget.${cat.key}`)  : cat?.name });}
+    else if (cost / income > 0.15) { v = t('decide.thinkTwice'); type='maybe'; msg= t('decide.incomeMessage', { cost: fmt(cost) });}
+    else { v = t('decide.goForIt'); type='yes'; msg=t('decide.goForItMessage', { remaining: fmt(availableBalance - cost) });}
     setResult({ v, type, msg });
   };
 
   const analyzePurchase = () => {
     const price = parseFloat(purPrice) || 0;
-    if (!purName.trim()) return Alert.alert('Enter a product name.');
+    if (!purName.trim()) return Alert.alert(t('decide.enterProduct'));
     let v, type, msg;
     if (price > availableBalance && urgency !== 'urgent') {
       const mo = Math.ceil(price / Math.max(1, savingsAmount));
-      v='Wait — save up first'; type='no'; msg=`Can't comfortably buy this now. Could afford in ~${mo} month${mo>1?'s':''}.`;
+      v = t('decide.waitForDrop'); type='no'; msg= t('decide.affordInMonths', {  count: mo, months: mo,});
     } else if (price > availableBalance) {
-      v='Tight — but possible'; type='maybe'; msg=`Urgent but short by ${fmt(price - availableBalance)}.`;
+      v = t('decide.tight'); type='maybe'; msg=t('decide.shortBy', {amount: fmt(price - availableBalance),});
     } else if (price / income > 0.3 && urgency === 'flexible') {
-      v='Consider waiting'; type='maybe'; msg=`${fmt(price)} is ${Math.round(price/income*100)}% of income. Watching for a better price is smart.`;
+      v = t('decide.considerWaiting'); type='maybe'; msg=t('decide.highIncomePercent', { price: fmt(price),   percent: Math.round((price / income) * 100),  });
     } else {
-      v='Good to go ✓'; type='yes'; msg=`You can afford ${purName}. You'll have ${fmt(availableBalance - price)} remaining.`;
-    }
+      v = ('decide.goodToGo'); type='yes'; msg=t('decide.canAffordProduct', { product: purName,  amount: fmt(availableBalance - price), });}
     setResult({ v, type, msg });
   };
 
   const addPriceWatch = () => {
     const cur = parseFloat(pwCur) || 0, tgt = parseFloat(pwTgt) || 0;
-    if (!pwProd.trim()) return Alert.alert('Enter a product name.');
+    if (!pwProd.trim()) return Alert.alert(t('decide.enterProduct'));
     const diff = cur - tgt, pct = tgt > 0 ? Math.round((diff/cur)*100) : 0;
     const canNow = cur <= availableBalance, canTgt = tgt <= availableBalance;
     let tip;
-    if (canNow && cur <= tgt) tip = '✓ You can already afford this!';
-    else if (!canNow && !canTgt) tip = `Even at target of ${fmt(tgt)}, you can't afford it yet.`;
-    else if (diff > 0) tip = `Waiting for ${pct}% drop (${fmt(diff)} savings). ${canTgt?'Can afford at target.':'Keep saving.'}`;
-    else tip = `Price at/below target. ${canNow?'Buy now!':'Almost there.'}`;
+    if (canNow && cur <= tgt) tip = t('decide.watch.canNow');
+    else if (!canNow && !canTgt) tip = t('decide.watch.cannotTarget', {target: fmt(tgt)  });
+    else if (diff > 0) tip = t('decide.watch.wait', {percent: pct, savings: fmt(diff), advice: canTgt  ? t('decide.watch.affordTarget') : t('decide.watch.keepSaving')  });
+    else tip = t('decide.watch.belowTarget', {  advice: canNow  ? t('decide.watch.buyNow')  : t('decide.watch.almostThere')  });
     dispatch({ type: 'ADD_PRICE_WATCH', payload: { id: uid(), product: pwProd, currentPrice: cur, targetPrice: tgt, store: pwStore||'Any', tip } });
     setPwProd(''); setPwCur(''); setPwTgt(''); setPwStore('');
-    Alert.alert('Added to watchlist!');
+    Alert.alert(t('decide.addedWatchlist'));
   };
 
   const resultColors = { yes: colors.success, no: colors.danger, maybe: colors.warning };
@@ -79,11 +81,11 @@ export default function DecideScreen() {
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={s.title}>Smart Advisor</Text>
-      <Text style={s.sub}>Ask FinyWise whether you can afford something — right now.</Text>
+      <Text style={s.title}>{t('decide.title')}</Text>
+      <Text style={s.sub}>{t('decide.subtitle')}</Text>
 
       <View style={s.tabs}>
-        {[['activity','🎯 Activity'],['purchase','🛒 Purchase'],['price','📈 Watchlist']].map(([t,l]) => (
+        {[['activity','🎯' + t('decide.activity')],['purchase','🛒' + t('decide.purchase')],['price','📈' + t('decide.watchlist')]].map(([t,l]) => (
           <TouchableOpacity key={t} style={[s.tab, tab===t&&s.tabActive]} onPress={() => { setTab(t); setResult(null); }}>
             <Text style={[s.tabText, tab===t&&s.tabTextActive]}>{l}</Text>
           </TouchableOpacity>
@@ -92,19 +94,19 @@ export default function DecideScreen() {
 
       {tab === 'activity' && (
         <Card>
-          <Input label="What's the activity?" value={actName} onChangeText={setActName} placeholder="e.g. Dinner with friends"/>
-          <Input label="Estimated cost" value={actCost} onChangeText={setActCost} keyboardType="numeric" placeholder="0"/>
-          <Button label="Analyze ✦" onPress={analyzeActivity}/>
+          <Input label={t('decide.activityQuestion')} value={actName} onChangeText={setActName} placeholder={t('decide.activityPlaceholder')}/>
+          <Input label={t('decide.estimatedCost')} value={actCost} onChangeText={setActCost} keyboardType="numeric" placeholder="0"/>
+          <Button label={t('decide.analyze')} onPress={analyzeActivity}/>
         </Card>
       )}
 
       {tab === 'purchase' && (
         <Card>
-          <Input label="What do you want to buy?" value={purName} onChangeText={setPurName} placeholder="e.g. Laptop..."/>
-          <Input label="Price" value={purPrice} onChangeText={setPurPrice} keyboardType="numeric" placeholder="0"/>
-          <Text style={s.label}>Can it wait?</Text>
+          <Input label={t('decide.buyQuestion')} value={purName} onChangeText={setPurName} placeholder={t('decide.productPlaceholder')}/>
+          <Input label={t('decide.price')} value={purPrice} onChangeText={setPurPrice} keyboardType="numeric" placeholder="0"/>
+          <Text style={s.label}>{t('decide.canWait')}</Text>
           <Row style={{ gap: 8, marginBottom: 16 }}>
-            {[['flexible','Flexible'],['soon','Soon'],['urgent','Urgent']].map(([u,l]) => (
+            {[['flexible',t('decide.flexible')],['soon',t('decide.soon')],['urgent',t('decide.urgent')]].map(([u,l]) => (
               <TouchableOpacity key={u} style={[s.urgencyBtn, urgency===u&&s.urgencyBtnActive]} onPress={() => setUrgency(u)}>
                 <Text style={[s.urgencyText, urgency===u&&s.urgencyTextActive]}>{l}</Text>
               </TouchableOpacity>
@@ -117,16 +119,16 @@ export default function DecideScreen() {
       {tab === 'price' && (
         <>
           <Card>
-            <Input label="Product name" value={pwProd} onChangeText={setPwProd} placeholder="e.g. MacBook Air M3"/>
+            <Input label={t('decide.productName')} value={pwProd} onChangeText={setPwProd} placeholder="e.g. MacBook Air M3"/>
             <Row style={{ gap: 10 }}>
-              <View style={{ flex: 1 }}><Input label="Current price" value={pwCur} onChangeText={setPwCur} keyboardType="numeric" placeholder="0"/></View>
-              <View style={{ flex: 1 }}><Input label="Target price" value={pwTgt} onChangeText={setPwTgt} keyboardType="numeric" placeholder="0"/></View>
+              <View style={{ flex: 1 }}><Input label={t('decide.currentPrice')} value={pwCur} onChangeText={setPwCur} keyboardType="numeric" placeholder="0"/></View>
+              <View style={{ flex: 1 }}><Input label={t('decide.targetPrice')} value={pwTgt} onChangeText={setPwTgt} keyboardType="numeric" placeholder="0"/></View>
             </Row>
-            <Input label="Store" value={pwStore} onChangeText={setPwStore} placeholder="e.g. Amazon, Fnac..."/>
-            <Button label="Add to watchlist ✦" onPress={addPriceWatch}/>
+            <Input label={t('decide.store')} value={pwStore} onChangeText={setPwStore} placeholder="e.g. Amazon, Fnac..."/>
+            <Button label={t('decide.addWatchlist')} onPress={addPriceWatch}/>
           </Card>
-          <SectionTitle>Price watchlist</SectionTitle>
-          {!priceWatchlist.length && <Empty icon="📈" message="No items yet.\nAdd a product above."/>}
+          <SectionTitle>{t('decide.watchlistTitle')}</SectionTitle>
+          {!priceWatchlist.length && ( <Empty icon="📈" message={t('decide.noItems')}/> )}
           {priceWatchlist.map(p => (
             <Card key={p.id}>
               <Row style={{ justifyContent: 'space-between', marginBottom: 8 }}>
@@ -139,7 +141,7 @@ export default function DecideScreen() {
               <View style={{ backgroundColor: 'rgba(124,106,247,0.07)', borderWidth: 1, borderColor: 'rgba(124,106,247,0.22)', borderRadius: 8, padding: 10 }}>
                 <Text style={{ fontSize: 12, color: colors.muted }}>{p.tip}</Text>
               </View>
-              <Button label="Remove" variant="danger" size="sm" style={{ marginTop: 10, alignSelf: 'flex-start' }}
+              <Button label={t('common.delete')} variant="danger" size="sm" style={{ marginTop: 10, alignSelf: 'flex-start' }}
                 onPress={() => dispatch({ type: 'DELETE_PRICE_WATCH', payload: p.id })}/>
             </Card>
           ))}

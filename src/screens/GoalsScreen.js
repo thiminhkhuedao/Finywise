@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, Empty, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 const GOAL_ICONS = ['✈️','🏠','💻','🎓','🚗','💍','🏖️','🎮','📱','🎸','👗','🌍'];
 
@@ -13,9 +15,10 @@ function AddGoalModal({ visible, onClose, onSave }) {
   const [icon, setIcon] = useState('✈️');
   const [target, setTarget] = useState('');
   const [saved, setSaved] = useState('');
+  const { t } = useTranslation();
 
   const submit = () => {
-    if (!name || !target) return Alert.alert('Fill in name and target amount.');
+    if (!name || !target) return Alert.alert(t('goals.fillFields'));
     const deadline = new Date(Date.now() + 90*24*60*60*1000).toISOString().slice(0,10);
     onSave({ name, icon, target: parseFloat(target), saved: parseFloat(saved)||0, deadline });
     setName(''); setTarget(''); setSaved(''); onClose();
@@ -26,10 +29,10 @@ function AddGoalModal({ visible, onClose, onSave }) {
       <View style={s.overlay}>
         <View style={s.sheet}>
           <View style={s.handle}/>
-          <Text style={s.sheetTitle}>New savings goal</Text>
-          <Text style={s.label}>What are you saving for?</Text>
-          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="e.g. Trip to Japan, New laptop..." placeholderTextColor={colors.muted}/>
-          <Text style={s.label}>Choose an icon</Text>
+          <Text style={s.sheetTitle}>{t('goals.newGoal')}</Text>
+          <Text style={s.label}>{t('goals.savingFor')}</Text>
+          <TextInput style={s.input} value={name} onChangeText={setName} placeholder={t('goals.placeholder')} placeholderTextColor={colors.muted}/>
+          <Text style={s.label}>{t('goals.chooseIcon')}</Text>
           <View style={s.iconGrid}>
             {GOAL_ICONS.map(i => (
               <TouchableOpacity key={i} onPress={() => setIcon(i)}
@@ -40,17 +43,17 @@ function AddGoalModal({ visible, onClose, onSave }) {
           </View>
           <Row style={{gap:8}}>
             <View style={{flex:1}}>
-              <Text style={s.label}>Target amount</Text>
+              <Text style={s.label}>{t('goals.targetAmount')}</Text>
               <TextInput style={s.input} value={target} onChangeText={setTarget} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
             </View>
             <View style={{flex:1}}>
-              <Text style={s.label}>Already saved</Text>
+              <Text style={s.label}>{t('goals.alreadySaved')}</Text>
               <TextInput style={s.input} value={saved} onChangeText={setSaved} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
             </View>
           </Row>
           <Row style={{gap:8}}>
-            <Button label="Cancel" variant="secondary" style={{flex:1}} onPress={onClose}/>
-            <Button label="Create goal" variant="primary" style={{flex:1}} onPress={submit}/>
+            <Button label={t('common.cancel')} variant="secondary" style={{flex:1}} onPress={onClose}/>
+            <Button label={t('goals.createGoal')} variant="primary" style={{flex:1}} onPress={submit}/>
           </Row>
         </View>
       </View>
@@ -62,6 +65,7 @@ export default function GoalsScreen({ navigation }) {
   const { state, dispatch } = useAppState();
   const { fmt } = useComputed();
   const [showAdd, setShowAdd] = useState(false);
+  const { t } = useTranslation();
 
   const goals = state.savingsGoals || [];
   const active = goals.filter(g => !g.completed);
@@ -73,7 +77,7 @@ export default function GoalsScreen({ navigation }) {
   };
 
   const handleAddFunds = (id) => {
-    Alert.prompt('Add funds', 'How much are you adding?', (val) => {
+    Alert.prompt(t('goals.addFunds'), t('goals.addFundsQuestion'),  (val) => {
       const amt = parseFloat(val);
       if (!amt) return;
       dispatch({ type: 'ADD_TO_GOAL', payload: { id, amount: amt } });
@@ -81,9 +85,9 @@ export default function GoalsScreen({ navigation }) {
   };
 
   const handleDelete = (id) => {
-    Alert.alert('Delete goal?', '', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => dispatch({ type: 'DELETE_GOAL', payload: id }) }
+    Alert.alert(t('goals.deleteGoal'), '', [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.delete'), style: 'destructive', onPress: () => dispatch({ type: 'DELETE_GOAL', payload: id }) }
     ]);
   };
 
@@ -103,11 +107,11 @@ return (
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={s.title}>Savings Goals</Text>
-      <Text style={s.sub}>Track what you're saving toward. Get warnings if you fall behind.</Text>
-      <Button label="+ Add goal" variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
+      <Text style={s.title}>{t('goals.newGoal')}</Text>
+      <Text style={s.sub}>{t('goals.description')}</Text>
+      <Button label={t('goals.addGoal')} variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
 
-      {!goals.length && <Empty icon="🎯" message={"No goals yet.\nTap + Add to create your first savings goal."}/>}
+      {!goals.length && <Empty icon="🎯" message={t('goals.empty')}/>}
 
       {active.map(g => {
         const p = pct(g.saved, g.target);
@@ -119,7 +123,7 @@ return (
               <Text style={{fontSize:28}}>{g.icon}</Text>
               <View style={{flex:1}}>
                 <Text style={s.goalName}>{g.name}</Text>
-                <Text style={s.goalSub}>{g.deadline} · {daysLeft} days left</Text>
+                <Text style={s.goalSub}>{g.deadline} · {daysLeft} {t('goals.daysLeft')}</Text>
               </View>
               <View style={{alignItems:'flex-end'}}>
                 <Text style={s.goalAmt}>{fmt(g.saved)}</Text>
@@ -129,9 +133,9 @@ return (
             <View style={s.progressWrap}>
               <View style={[s.progressBar, {width:`${p}%`, backgroundColor:sc}]}/>
             </View>
-            <Text style={[s.goalStatus, {color:sc}]}>{p}% · {p<100?`${fmt(g.target-g.saved)} to go`:'Done!'}</Text>
+            <Text style={[s.goalStatus, {color:sc}]}>{p}% · {p<100?`${fmt(g.target-g.saved)} ${t('goals.toGo')}` : t('goals.done')}</Text>
             <Row style={{gap:8,marginTop:10}}>
-              <Button label="+ Add funds" variant="success" style={{flex:1}} size="sm" onPress={() => handleAddFunds(g.id)}/>
+              <Button label={t('goals.addFunds')} variant="success" style={{flex:1}} size="sm" onPress={() => handleAddFunds(g.id)}/>
               <Button label="✕" variant="danger" size="sm" onPress={() => handleDelete(g.id)}/>
             </Row>
           </Card>
@@ -140,14 +144,14 @@ return (
 
       {done.length > 0 && (
         <>
-          <SectionTitle>Completed 🎉</SectionTitle>
+          <SectionTitle>{t('goals.completed')}🎉</SectionTitle>
           {done.map(g => (
             <Card key={g.id} style={s.doneCard}>
               <View style={s.goalHeader}>
                 <Text style={{fontSize:24}}>{g.icon}</Text>
                 <View style={{flex:1}}>
                   <Text style={s.goalName}>{g.name}</Text>
-                  <Text style={{fontSize:11,color:colors.success}}>✓ Completed! {fmt(g.target)} saved</Text>
+                  <Text style={{fontSize:11,color:colors.success}}>✓ {t('goals.completedMessage')}{fmt(g.target)}</Text>
                 </View>
                 <Button label="✕" variant="danger" size="sm" onPress={() => handleDelete(g.id)}/>
               </View>

@@ -5,12 +5,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed, uid, today } from '../state';
 import { Card, SectionTitle, Button, Input, Empty, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
 
 function ScoreRing({ score }) {
+   const { t } = useTranslation();
   const size = 88, r = 34, circ = 2 * Math.PI * r;
   const dash = circ - (score / 100) * circ;
+
   const color = score >= 70 ? colors.success : score >= 40 ? colors.warning : colors.danger;
-  const label = score >= 70 ? 'Healthy' : score >= 40 ? 'Caution' : 'At Risk';
+
+  const label =
+    score >= 70
+      ? t('dashboard.health.healthy')
+      : score >= 40
+      ? t('dashboard.health.caution')
+      : t('dashboard.health.risk');
+
   return (
     <View style={{ width: size, height: size, position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
       <Svg width={size} height={size} style={{ transform: [{ rotate: '-90deg' }] }}>
@@ -18,6 +28,7 @@ function ScoreRing({ score }) {
         <Circle cx={44} cy={44} r={r} fill="none" stroke={color} strokeWidth={8}
           strokeDasharray={circ} strokeDashoffset={dash} strokeLinecap="round"/>
       </Svg>
+
       <View style={{ position: 'absolute', alignItems: 'center' }}>
         <Text style={{ fontSize: 20, fontWeight: '700', color }}>{score}</Text>
         <Text style={{ fontSize: 9, color: colors.muted }}>{label}</Text>
@@ -27,15 +38,31 @@ function ScoreRing({ score }) {
 }
 
 function AddTxModal({ visible, onClose, budgets, dispatch }) {
+  const { t } = useTranslation();
   const [desc, setDesc] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState('expense');
   const [catId, setCatId] = useState('');
 
   const submit = () => {
-    if (!desc.trim() || !amount) return Alert.alert('Fill in description and amount.');
-    dispatch({ type: 'ADD_TRANSACTION', payload: { id: uid(), desc: desc.trim(), amount: parseFloat(amount), date: today(), type, categoryId: catId || null } });
-    setDesc(''); setAmount(''); onClose();
+    if (!desc.trim() || !amount)
+      return Alert.alert(t('errors.fillTransaction'));
+
+    dispatch({
+      type: 'ADD_TRANSACTION',
+      payload: {
+        id: uid(),
+        desc: desc.trim(),
+        amount: parseFloat(amount),
+        date: today(),
+        type,
+        categoryId: catId || null
+      }
+    });
+
+    setDesc('');
+    setAmount('');
+    onClose();
   };
 
   return (
@@ -43,35 +70,83 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
       <View style={s.overlay}>
         <View style={s.sheet}>
           <View style={s.handle}/>
-          <Text style={s.sheetTitle}>Log transaction</Text>
-          <Input label="Description" value={desc} onChangeText={setDesc} placeholder="e.g. Grocery run"/>
-          <Input label="Amount" value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/>
-          <Text style={s.label}>Type</Text>
+
+          <Text style={s.sheetTitle}>{t('transactions.logTitle')}</Text>
+
+          <Input
+            label={t('transactions.description')}
+            value={desc}
+            onChangeText={setDesc}
+            placeholder={t('transactions.descriptionPlaceholder')}
+          />
+
+          <Input
+            label={t('transactions.amount')}
+            value={amount}
+            onChangeText={setAmount}
+            keyboardType="numeric"
+            placeholder="0"
+          />
+
+          <Text style={s.label}>{t('transactions.type')}</Text>
+
           <Row style={{ gap: 10, marginBottom: 12 }}>
-            {['expense','income'].map(t => (
-              <TouchableOpacity key={t} style={[s.typeBtn, type===t && s.typeBtnActive]} onPress={() => setType(t)}>
-                <Text style={[s.typeBtnText, type===t && s.typeBtnTextActive]}>{t.charAt(0).toUpperCase()+t.slice(1)}</Text>
+            {['expense','income'].map(typeOption => (
+              <TouchableOpacity
+                key={typeOption}
+                style={[s.typeBtn, type===typeOption && s.typeBtnActive]}
+                onPress={() => setType(typeOption)}
+              >
+                <Text style={[s.typeBtnText, type===typeOption && s.typeBtnTextActive]}>
+                  {t(`transactions.${typeOption}`)}
+                </Text>
               </TouchableOpacity>
             ))}
           </Row>
+
           {budgets.length > 0 && (
             <>
-              <Text style={s.label}>Category</Text>
+              <Text style={s.label}>{t('transactions.category')}</Text>
+
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
                 <Row style={{ gap: 8 }}>
-                  {budgets.map(b => (
-                    <TouchableOpacity key={b.id} style={[s.catChip, catId===b.id && { borderColor: b.color, backgroundColor: b.color + '22' }]} onPress={() => setCatId(catId===b.id?'':b.id)}>
-                      <Text style={{ fontSize: 14 }}>{b.icon}</Text>
-                      <Text style={[s.catChipText, catId===b.id && { color: colors.text }]}>{b.name}</Text>
-                    </TouchableOpacity>
-                  ))}
+                  {budgets.map(b => {
+  console.log(b);
+
+  return (
+    <TouchableOpacity
+      key={b.id}
+      style={[
+        s.catChip,
+        catId === b.id && {
+          borderColor: b.color,
+          backgroundColor: b.color + '22',
+        },
+      ]}
+      onPress={() => setCatId(catId === b.id ? '' : b.id)}
+    >
+      <Text style={{ fontSize: 14 }}>{b.icon}</Text>
+      <Text style={s.catChipText}>{b.key ? t(`budget.${b.key}`) : b.name}</Text>
+    </TouchableOpacity>
+  );
+})}
                 </Row>
               </ScrollView>
             </>
           )}
+
           <Row style={{ gap: 10 }}>
-            <Button label="Cancel" variant="secondary" style={{ flex: 1 }} onPress={onClose}/>
-            <Button label="Log it" style={{ flex: 1 }} onPress={submit}/>
+            <Button
+              label={t('common.cancel')}
+              variant="secondary"
+              style={{ flex: 1 }}
+              onPress={onClose}
+            />
+            <Button
+              label={t('transactions.log')}
+              style={{ flex: 1 }}
+              onPress={submit}
+            />
           </Row>
         </View>
       </View>
@@ -81,7 +156,8 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
 
 export default function DashboardScreen({ navigation }) {
   const { state, dispatch } = useAppState();
-  const { totalSpent, availableBalance, savingsAmount, healthScore, fmt } = useComputed();
+  const { t } = useTranslation();
+  const { totalSpent, availableBalance, savingsAmount, goalAmount, goalProgress, healthScore, fmt } = useComputed();
   const [showAddTx, setShowAddTx] = useState(false);
   const { profile, budgets, transactions, savingsGoals, streak } = state;
   const recent = [...transactions].sort((a,b) => b.date.localeCompare(a.date)).slice(0,4);
@@ -95,7 +171,7 @@ export default function DashboardScreen({ navigation }) {
     >
       <View style={s.headerRow}>
         <View>
-          <Text style={s.greeting}>Good day,</Text>
+          <Text style={s.greeting}>{t('dashboard.greeting')}</Text>
           <Text style={s.name}>{profile.name} 👋</Text>
         </View>
         <ScoreRing score={healthScore}/>
@@ -105,30 +181,96 @@ export default function DashboardScreen({ navigation }) {
         <View style={s.streakBanner}>
           <Text style={{ fontSize: 32 }}>🔥</Text>
           <View>
-            <Text style={s.streakLabel}>Spending streak</Text>
-            <Text style={s.streakNum}>{streak.current} <Text style={s.streakUnit}>days under budget</Text></Text>
+            <Text style={s.streakLabel}>{t('dashboard.streak')}</Text>
+            <Text style={s.streakNum}>{streak.current} 
+            <Text style={s.streakUnit}>{t('dashboard.days_under_budget')}</Text></Text>
           </View>
         </View>
       )}
 
       <View style={s.balanceCard}>
-        <Text style={s.balanceLabel}>Available this month</Text>
-        <Text style={[s.balanceNum, { color: ac }]}>
-          {fmt(Math.abs(availableBalance))}{availableBalance < 0 ? ' overbudget' : ''}
+  <Text style={s.balanceLabel}>{t('dashboard.available')}</Text>
+
+  <Text style={[s.balanceNum, { color: ac }]}>
+    {fmt(Math.abs(availableBalance))}
+    {availableBalance < 0 ? ' overbudget' : ''}
+  </Text>
+
+  <Row style={{ gap: 24, marginTop: 12 }}>
+    {[
+      [t('dashboard.income'), fmt(profile.monthlyIncome), colors.text],
+      [t('dashboard.expenses'), fmt(totalSpent), colors.danger],
+      [t('dashboard.savings'), fmt(savingsAmount), colors.success],
+    ].map(([l, v, c]) => (
+      <View key={l}>
+        <Text style={s.balanceMeta}>{l}</Text>
+        <Text style={[s.balanceMetaVal, { color: c }]}>
+          {v}
         </Text>
-        <Row style={{ gap: 24, marginTop: 12 }}>
-          {[['Income', fmt(profile.monthlyIncome), colors.text],['Spent', fmt(totalSpent), colors.danger],['Savings', fmt(savingsAmount), colors.success]].map(([l,v,c]) => (
-            <View key={l}>
-              <Text style={s.balanceMeta}>{l}</Text>
-              <Text style={[s.balanceMetaVal, { color: c }]}>{v}</Text>
-            </View>
-          ))}
-        </Row>
       </View>
+    ))}
+  </Row>
+
+<Text
+  style={{
+    marginTop: 16,
+    marginBottom: 6,
+    fontSize: 12,
+    color: colors.muted,
+  }}
+>
+  {t("dashboard.savingsProgress")}
+</Text>
+  <View
+    style={{
+      height: 8,
+      backgroundColor: colors.surface2,
+      borderRadius: 10,
+      overflow: 'hidden',
+      marginTop: 18,
+    }}
+  >
+    <View
+      style={{
+        width: `${Math.min(goalProgress, 100)}%`,
+        height: '100%',
+        backgroundColor:
+          goalProgress >= 100
+            ? colors.success
+            : colors.accent,
+      }}
+    />
+  </View>
+
+  <Text
+    style={{
+      marginTop: 8,
+      fontSize: 12,
+      color: colors.muted,
+      textAlign: 'center',
+    }}
+  >
+    {fmt(savingsAmount)} / {fmt(goalAmount)} ({Math.round(goalProgress)}%)
+  </Text>
+
+  {goalProgress >= 100 && (
+    <Text
+      style={{
+        color: colors.success,
+        fontWeight: '700',
+        marginTop: 6,
+        textAlign: 'center',
+      }}
+    >
+      🎉 {t('dashboard.goalReached')}
+    </Text>
+  )}
+
+</View>
 
       {savingsGoals.filter(g=>!g.completed).length > 0 && (
         <>
-          <SectionTitle>Savings goals</SectionTitle>
+          <SectionTitle>{t('goals.title')}</SectionTitle>
           {savingsGoals.filter(g=>!g.completed).slice(0,2).map(g => {
             const p = Math.min(100, Math.round((g.saved/g.target)*100));
             return (
@@ -146,9 +288,9 @@ export default function DashboardScreen({ navigation }) {
         </>
       )}
 
-      <SectionTitle>Budget overview</SectionTitle>
+      <SectionTitle>{t('budget.title')}</SectionTitle>
       <Card style={{ paddingVertical: 4 }}>
-        {!budgets.length && <Empty icon="◎" message="No categories yet.\nGo to Budget to create one."/>}
+        {!budgets.length && <Empty icon="◎" message={t('budget.no_categories')}/>}
         {budgets.slice(0,4).map(b => {
           const p = Math.min(100, Math.round((b.spent/b.allocated)*100));
           return (
@@ -158,7 +300,7 @@ export default function DashboardScreen({ navigation }) {
                   <Text style={{ fontSize: 17 }}>{b.icon}</Text>
                 </View>
                 <View>
-                  <Text style={s.itemName}>{b.name}</Text>
+                  <Text style={s.itemName}>{b.key ? t(`budget.${b.key}`) : b.name}</Text>
                   <Text style={s.itemSub}>{fmt(b.spent)} / {fmt(b.allocated)}</Text>
                 </View>
               </Row>
@@ -172,32 +314,44 @@ export default function DashboardScreen({ navigation }) {
 
       {recent.length > 0 && (
         <>
-          <SectionTitle>Recent transactions</SectionTitle>
+          <SectionTitle>{t('transactions.recent')}</SectionTitle>
           <Card style={{ paddingVertical: 4 }}>
-            {recent.map(t => {
-              const cat = budgets.find(b => b.id === t.categoryId);
-              return (
-                <View key={t.id} style={s.listItem}>
-                  <Row style={{ gap: 11, flex: 1 }}>
-                    <View style={[s.iconBox, { backgroundColor: (cat?.color||'#7c6af7') + '22' }]}>
-                      <Text style={{ fontSize: 17 }}>{cat?.icon||'💳'}</Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={s.itemName} numberOfLines={1}>{t.desc}{t.recurring ? ' ↻' : ''}</Text>
-                      <Text style={s.itemSub}>{cat?.name||'Uncategorized'} · {t.date}</Text>
-                    </View>
-                  </Row>
-                  <Text style={{ fontWeight: '500', color: t.type==='income'?colors.success:colors.danger, fontSize: 13 }}>
-                    {t.type==='income'?'+':'−'}{fmt(t.amount)}
-                  </Text>
-                </View>
-              );
-            })}
+            {recent.map(transaction => {
+  const cat = budgets.find(b => b.id === transaction.categoryId);
+
+  return (
+    <View key={transaction.id} style={s.listItem}>
+      <Row style={{ gap: 11, flex: 1 }}>
+        <View style={[s.iconBox, { backgroundColor: (cat?.color || '#7c6af7') + '22' }]}>
+          <Text style={{ fontSize: 17 }}>{cat?.icon || '💳'}</Text>
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Text style={s.itemName} numberOfLines={1}>
+            {transaction.desc}{transaction.recurring ? ' ↻' : ''}
+          </Text>
+
+          <Text style={s.itemSub}>
+            {cat?.name || t('budget.uncategorized')} · {transaction.date}
+          </Text>
+        </View>
+      </Row>
+
+      <Text style={{
+        fontWeight: '500',
+        color: transaction.type === 'income' ? colors.success : colors.danger,
+        fontSize: 13
+      }}>
+        {transaction.type === 'income' ? '+' : '−'}{fmt(transaction.amount)}
+      </Text>
+    </View>
+  );
+})}
           </Card>
         </>
       )}
 
-      <Button label="+ Log a transaction" variant="secondary" onPress={() => setShowAddTx(true)} style={{ marginTop: 4 }}/>
+      <Button label={t('transactions.log')} variant="secondary" onPress={() => setShowAddTx(true)} style={{ marginTop: 4 }}/>
       <AddTxModal visible={showAddTx} onClose={() => setShowAddTx(false)} budgets={budgets} dispatch={dispatch}/>
         </ScrollView>
   </SafeAreaView>

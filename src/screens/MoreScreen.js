@@ -3,29 +3,61 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppState } from '../state';
-import { SectionTitle } from '../components/UI';
+import { Card, SectionTitle, Button } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
 
 const MENU = [
-  { icon:'◈', label:'Activities',         sub:'Plan outings & events',             screen:'Activities'  },
-  { icon:'↻', label:'Recurring Expenses', sub:'Auto-deduct fixed monthly costs',   screen:'Recurring'   },
-  { icon:'⚡', label:'Bill Split',         sub:'Split bills fairly with friends',   screen:'Split'       },
-  { icon:'🏆', label:'Challenges',         sub:'Spending streaks & habit goals',    screen:'Challenges'  },
-  { icon:'📊', label:'Monthly Report',     sub:'Your full month in numbers',        screen:'Report'      },
-  { icon:'◉', label:'Insights',           sub:'Charts, trends & smart tips',       screen:'Insights'    },
+  {
+    icon:'◈',
+    label:'more.activities',
+    sub:'more.activitiesSub',
+    screen:'Activities'
+  },
+  {
+    icon:'↻',
+    label:'more.recurring',
+    sub:'more.recurringSub',
+    screen:'Recurring'
+  },
+  {
+    icon:'⚡',
+    label:'more.split',
+    sub:'more.splitSub',
+    screen:'Split'
+  },
+  {
+    icon:'🏆',
+    label:'more.challenges',
+    sub:'more.challengesSub',
+    screen:'Challenges'
+  },
+  {
+    icon:'📊',
+    label:'more.report',
+    sub:'more.reportSub',
+    screen:'Report'
+  },
+  {
+    icon:'◉',
+    label:'more.insights',
+    sub:'more.insightsSub',
+    screen:'Insights'
+  },
 ];
 
 export default function MoreScreen({ navigation }) {
   const { dispatch } = useAppState();
+  const { t } = useTranslation();
 
   const resetAll = () => {
-    Alert.alert('Reset all data?', 'This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Reset', style: 'destructive', onPress: async () => {
-        await AsyncStorage.clear();
-        dispatch({ type: 'RESET' });
-      }},
-    ]);
+    Alert.alert(t('more.resetQuestion'),t('more.resetWarning'),
+      {text: t('common.cancel'), style: 'cancel'},
+      {text: t('more.reset'), style: 'destructive', onPress: async () => {
+      await AsyncStorage.clear();
+      dispatch({ type: 'RESET' });
+    }},
+    );
   };
 
   return (
@@ -34,8 +66,8 @@ export default function MoreScreen({ navigation }) {
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={s.title}>More</Text>
-      <Text style={s.sub}>All FinyWise features</Text>
+      <Text style={s.title}>{t('more.title')}</Text>
+      <Text style={s.sub}>{t('more.subtitle')}</Text>
 
       {MENU.map(m => (
         <TouchableOpacity key={m.screen} style={s.menuCard} activeOpacity={0.75}
@@ -44,16 +76,35 @@ export default function MoreScreen({ navigation }) {
             <Text style={{ fontSize: 20 }}>{m.icon}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={s.menuLabel}>{m.label}</Text>
-            <Text style={s.menuSub}>{m.sub}</Text>
+            <Text style={s.menuLabel}>{t(m.label)}</Text>
+            <Text style={s.menuSub}>{t(m.sub)}</Text>
           </View>
           <Text style={{ color: colors.muted, fontSize: 18 }}>›</Text>
         </TouchableOpacity>
       ))}
 
+      <TouchableOpacity
+  style={s.menuCard}
+  activeOpacity={0.75}
+  onPress={() => navigation.navigate('Settings')}
+>
+  <View style={s.menuIcon}>
+    <Text style={{ fontSize: 20 }}>⚙</Text>
+  </View>
+
+  <View style={{ flex: 1 }}>
+    <Text style={s.menuLabel}>{t('more.settings')}</Text>
+    <Text style={s.menuSub}>{t('more.settingsSub')}</Text>
+  </View>
+
+  <Text style={{ color: colors.muted, fontSize: 18 }}>
+    ›
+  </Text>
+</TouchableOpacity>
+
       <View style={s.divider}/>
       <TouchableOpacity style={s.resetBtn} onPress={resetAll}>
-        <Text style={s.resetText}>Reset all data</Text>
+        <Text style={s.resetText}>{t('more.reset')}</Text>
       </TouchableOpacity>
         </ScrollView>
   </SafeAreaView>
@@ -78,7 +129,3 @@ const s = StyleSheet.create({
   resetText:  { fontSize: 14, color: colors.danger, fontWeight: '500' },
 });
 
-<Button
-  label="⚙ Settings"
-  onPress={() => navigation.navigate('Settings')}
-/>

@@ -10,6 +10,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { StateProvider, useAppState } from './src/state';
 import { colors } from './src/theme';
+import { useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './src/i18n';
 
 // Screens (TABS)
 import DashboardScreen from './src/screens/DashboardScreen';
@@ -115,7 +118,12 @@ function Loading() {
 }
 
 function RootNavigator() {
+
   const { state } = useAppState();
+
+useEffect(() => {
+  i18n.changeLanguage(state?.profile?.language || 'en');
+}, [state?.profile?.language]);
 
   if (!state.loaded) {
     return <Loading />;

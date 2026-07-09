@@ -1,48 +1,77 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState } from '../state';
-import { colors } from '../theme';
+import { colors, spacing, radius } from '../theme';
+import i18n from '../i18n';
+import { useTranslation } from 'react-i18next';
 
 export default function SettingsScreen() {
   const { state, dispatch } = useAppState();
+  const { t } = useTranslation();
 
   const setLanguage = (language) => {
+    i18n.changeLanguage(language);
+
     dispatch({
       type: 'SET_PROFILE',
-      payload: { language },
+      payload: {
+        ...state.profile,
+        language,
+      },
     });
   };
 
   return (
-    <View style={s.container}>
-      <Text style={s.title}>Language</Text>
-
-      <TouchableOpacity
-        style={s.button}
-        onPress={() => setLanguage('fr')}
+    <SafeAreaView style={s.container} edges={['top']}>
+      <ScrollView
+        contentContainerStyle={s.scroll}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={s.text}>
-          🇫🇷 Français
-          {state.profile.language === 'fr' ? ' ✓' : ''}
-        </Text>
-      </TouchableOpacity>
+        <Text style={s.title}>{t('settings.title')}</Text>
+        <Text style={s.sub}>{t('settings.subtitle')}</Text>
 
-      <TouchableOpacity
-        style={s.button}
-        onPress={() => setLanguage('en')}
-      >
-        <Text style={s.text}>
-          🇬🇧 English
-          {state.profile.language === 'en' ? ' ✓' : ''}
-        </Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={s.section}>{t('settings.language')}</Text>
+
+        <TouchableOpacity
+          style={[
+            s.card,
+            state.profile.language === 'fr' && s.cardActive,
+          ]}
+          onPress={() => setLanguage('fr')}
+        >
+          <Text style={s.flag}>🇫🇷</Text>
+
+          <View style={{ flex: 1 }}>
+            <Text style={s.label}>Français</Text>
+            <Text style={s.desc}>Langue française</Text>
+          </View>
+
+          {state.profile.language === 'fr' && (
+            <Text style={s.check}>✓</Text>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            s.card,
+            state.profile.language === 'en' && s.cardActive,
+          ]}
+          onPress={() => setLanguage('en')}
+        >
+          <Text style={s.flag}>🇬🇧</Text>
+
+          <View style={{ flex: 1 }}>
+            <Text style={s.label}>English</Text>
+            <Text style={s.desc}>English language</Text>
+          </View>
+
+          {state.profile.language === 'en' && (
+            <Text style={s.check}>✓</Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -50,25 +79,71 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bg,
-    padding: 24,
+  },
+
+  scroll: {
+    padding: spacing.xl,
+    paddingTop: spacing.xl + 8,
+    paddingBottom: 40,
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
     color: colors.text,
-    marginBottom: 20,
+    marginBottom: 4,
   },
 
-  button: {
+  sub: {
+    fontSize: 13,
+    color: colors.muted,
+    marginBottom: 24,
+  },
+
+  section: {
+    fontSize: 12,
+    color: colors.muted,
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: 14,
+    marginBottom: 10,
   },
 
-  text: {
+  cardActive: {
+    borderColor: colors.accent,
+    backgroundColor: colors.accent + '15',
+  },
+
+  flag: {
+    fontSize: 24,
+    marginRight: 14,
+  },
+
+  label: {
+    fontSize: 15,
+    fontWeight: '600',
     color: colors.text,
-    fontSize: 18,
+  },
+
+  desc: {
+    fontSize: 12,
+    color: colors.muted,
+    marginTop: 2,
+  },
+
+  check: {
+    fontSize: 20,
+    color: colors.accent,
+    fontWeight: '700',
   },
 });

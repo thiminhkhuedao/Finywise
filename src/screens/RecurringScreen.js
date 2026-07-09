@@ -4,17 +4,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, Empty, TipBox, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
+
 
 function RecurringModal({ visible, onClose, onSave, budgets }) {
   const [name, setName] = useState('');
+  const { t } = useTranslation();
   const [icon, setIcon] = useState('↻');
   const [amount, setAmount] = useState('');
-  const [freq, setFreq] = useState('Monthly');
+  const [freq, setFreq] = useState('monthly'); 
   const [catId, setCatId] = useState('');
   const TextInput = require('react-native').TextInput;
 
   const submit = () => {
-    if (!name || !amount) return Alert.alert('Fill in name and amount.');
+    if (!name || !amount) return Alert.alert(t('recurring.fillFields'));
     onSave({ name, icon, amount: parseFloat(amount), frequency: freq, categoryId: catId || null });
     setName(''); setIcon('↻'); setAmount(''); onClose();
   };
@@ -24,30 +27,31 @@ function RecurringModal({ visible, onClose, onSave, budgets }) {
       <View style={s.overlay}>
         <View style={s.sheet}>
           <View style={s.handle}/>
-          <Text style={s.sheetTitle}>Add recurring expense</Text>
-          <Text style={s.label}>Name</Text>
-          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="e.g. Rent, Netflix, Gym..." placeholderTextColor={colors.muted}/>
+          <Text style={s.sheetTitle}>{t('recurring.addExpense')}</Text>
+          <Text style={s.label}>{t('common.name')}</Text>
+          <TextInput style={s.input} value={name} onChangeText={setName} placeholder={t('recurring.namePlaceholder')} placeholderTextColor={colors.muted}/>
           <Row>
             <View style={{flex:1,marginRight:8}}>
-              <Text style={s.label}>Icon</Text>
+              <Text style={s.label}>{t('budget.icon')}</Text>
               <TextInput style={s.input} value={icon} onChangeText={setIcon} maxLength={2} placeholderTextColor={colors.muted}/>
             </View>
             <View style={{flex:2}}>
-              <Text style={s.label}>Amount</Text>
-              <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
+              <Text style={s.label}>{t('split.amount')}</Text>
+              <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder={t('number')} placeholderTextColor={colors.muted}/>
             </View>
           </Row>
           <Row style={{gap:8,marginBottom:16}}>
-            {['Monthly','Weekly','Yearly'].map(f=>(
-              <TouchableOpacity key={f} onPress={()=>setFreq(f)}
+            {['monthly', 'weekly', 'yearly'].map(f => (
+              <TouchableOpacity 
+              key={f} onPress={()=>setFreq(f)}
                 style={[s.chip, freq===f && s.chipActive]}>
-                <Text style={[s.chipText, freq===f && s.chipTextActive]}>{f}</Text>
+                <Text style={[s.chipText, freq===f && s.chipTextActive]}>{t(`recurring.${f}`)}</Text>
               </TouchableOpacity>
             ))}
           </Row>
           <Row style={{gap:8}}>
-            <Button label="Cancel" variant="secondary" style={{flex:1}} onPress={onClose}/>
-            <Button label="Add" variant="primary" style={{flex:1}} onPress={submit}/>
+            <Button label={t('common.cancel')} variant="secondary" style={{flex:1}} onPress={onClose}/>
+            <Button label={t('common.add')} variant="primary" style={{flex:1}} onPress={submit}/>
           </Row>
         </View>
       </View>
@@ -57,6 +61,7 @@ function RecurringModal({ visible, onClose, onSave, budgets }) {
 
 export default function RecurringScreen({ navigation }) {
   const { state, dispatch } = useAppState();
+  const { t } = useTranslation();
   const { fmt } = useComputed();
   const [showAdd, setShowAdd] = useState(false);
   const month = new Date().toISOString().slice(0,7);
@@ -66,9 +71,9 @@ export default function RecurringScreen({ navigation }) {
   };
 
   const handleDelete = (id) => {
-    Alert.alert('Remove', 'Remove this recurring expense?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', style: 'destructive', onPress: () => dispatch({ type: 'DELETE_RECURRING', payload: id }) }
+    Alert.alert(t('recurring.remove'), t('recurring.removeMessage'),[
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.delete'), style: 'destructive', onPress: () => dispatch({ type: 'DELETE_RECURRING', payload: id }) }
     ]);
   };
 
@@ -78,13 +83,13 @@ export default function RecurringScreen({ navigation }) {
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={s.title}>Recurring Expenses</Text>
-      <Text style={s.sub}>Fixed expenses auto-deducted each month. Set once, forget them.</Text>
+      <Text style={s.title}> {t('recurring.title')}</Text>
+      <Text style={s.sub}>{t('recurring.subtitle')}</Text>
 
-      <Button label="+ Add recurring expense" variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
+      <Button label={t('recurring.addButton')} variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
 
       {!state.recurringExpenses?.length && (
-        <Empty icon="↻" message={"No recurring expenses yet.\nAdd rent, subscriptions, utilities..."}/>
+        <Empty icon="↻" message={t('recurring.empty')}/>
       )}
 
       {(state.recurringExpenses || []).map(r => {
@@ -98,23 +103,23 @@ export default function RecurringScreen({ navigation }) {
               </View>
               <View style={{flex:1}}>
                 <Text style={s.recurName}>{r.name}</Text>
-                <Text style={s.recurSub}>{cat?.name||'No category'} · {r.frequency}</Text>
+                <Text style={s.recurSub}>{cat?.key ? t(`budget.${cat.key}`)  : t('budget.uncategorized')}  {' · '}{r.frequency}</Text>
               </View>
               <View style={{alignItems:'flex-end'}}>
                 <Text style={[s.recurAmt, {color:colors.danger}]}>{fmt(r.amount)}</Text>
                 <Text style={[s.recurStatus, {color: applied ? colors.success : colors.muted}]}>
-                  {applied ? '✓ Applied' : 'Pending'}
+                 {applied ? t('recurring.applied') : t('recurring.pending')} 
                 </Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => handleDelete(r.id)} style={s.removeBtn}>
-              <Text style={s.removeBtnText}>✕ Remove</Text>
+              <Text style={s.removeBtnText}>✕ {t('common.delete')}</Text>
             </TouchableOpacity>
           </Card>
         );
       })}
 
-      <TipBox>💡 Recurring expenses are automatically logged on the 1st of each month and show with a ↻ badge in your transactions.</TipBox>
+      <TipBox>{t('recurring.tip')}</TipBox>
 
       <RecurringModal visible={showAdd} onClose={() => setShowAdd(false)} onSave={handleAdd} budgets={state.budgets}/>
         </ScrollView>

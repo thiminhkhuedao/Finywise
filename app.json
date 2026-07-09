@@ -23,6 +23,9 @@
       },
       "package": "com.yourname.finywise",
       "versionCode": 1
-    }
+    },
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }

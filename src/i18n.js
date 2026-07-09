@@ -1,31 +1,28 @@
-import { I18n } from 'i18n-js';
-import * as Localization from 'expo-localization';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
-const i18n = new I18n({
-  en: {
-    budget: 'Budget',
-    goals: 'Goals',
-    add: 'Add',
-    income: 'Income',
-  },
+import en from './locales/en.json';
+import fr from './locales/fr.json';
 
-  fr: {
-    budget: 'Budget',
-    goals: 'Objectifs',
-    add: 'Ajouter',
-    income: 'Revenus',
-  },
-});
+i18n
+  .use(initReactI18next)
+  .init({
+    compatibilityJSON: 'v3',
+    fallbackLng: 'en',
+    lng: 'en',
 
-i18n.locale = Localization.getLocales()[0]?.languageCode || 'en';
-i18n.enableFallback = true;
+    resources: {
+      en: {
+        translation: en,
+      },
+      fr: {
+        translation: fr,
+      },
+    },
+
+    interpolation: {
+      escapeValue: false,
+    },
+  });
 
 export default i18n;
-
-import i18n from '../i18n';
-
-<Text>{i18n.t('budget')}</Text>
-
-import { useAppState } from './state';
-
-i18n.locale = state.profile.language;

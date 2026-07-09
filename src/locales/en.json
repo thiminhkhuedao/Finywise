@@ -1,0 +1,472 @@
+{
+  "common": {
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "done": "Done",
+    "continue": "Continue",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "loading": "Loading...",
+    "start": "Start",
+    "abandon": "Abandon",
+    "name": "Name"
+  },
+
+  "navigation": {
+    "dashboard": "Dashboard",
+    "budget": "Budget",
+    "goals": "Goals",
+    "activities": "Activities",
+    "challenges": "Challenges",
+    "insights": "Insights",
+    "report": "Reports",
+    "subscriptions": "Subscriptions",
+    "split": "Split",
+    "settings": "Settings",
+    "more": "More"
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "income": "Income",
+    "expenses": "Expenses",
+    "balance": "Balance",
+    "savings": "Savings",
+    "greeting": "Good day,",
+    "available": "Available this month",
+    "streak": "Spending streak",
+    "days_under_budget": "days under budget",
+    "health": {"healthy": "Healthy", "caution": "Caution", "risk": "Risk" }
+  },
+
+  "activities": {
+    "title": "Activities",
+    "planned": "Planned",
+    "done": "Done",
+    "plan_title": "Plan an Activity",
+    "name": "Activity name",
+    "name_placeholder": "e.g. Movie night, Dinner, Concert...",
+    "cost": "Cost",
+    "date": "Date",
+    "notes": "Notes",
+    "notes_placeholder": "Optional notes",
+    "no_planned": "No planned activities.\nTap + Add to plan one.",
+    "no_done": "No completed activities yet.",
+    "mark_done": "Mark as done?",
+    "mark_done_desc": "This will log the cost as a transaction.",
+    "delete": "Delete",
+    "delete_confirm": "Delete?",
+    "done_button": "✓ Done",
+    "delete_button": "✕ Delete",
+    "save": "Save"
+  },
+
+
+  "budget": {
+    "title": "Budgets",
+    "income": "Income",
+    "budgeted": "Budgeted",
+    "free": "Free",
+    "categories": "Categories",
+    "all_transactions": "All transactions",
+    "no_categories": "No categories yet.\nTap Add to create one.",
+    "no_transactions": "No transactions yet.",
+    "uncategorized": "Uncategorized",
+    "delete_category": "Delete category?",
+    "new_category": "New budget category",
+    "namePlaceholder": "Name",
+    "icon": "Icon",
+    "monthly_budget": "Monthly budget",
+    "color": "Color",
+    "enter_name": "Enter a name.",
+    "example": "e.g. Health",
+    "housing": "Housing",
+    "food": "Food",
+    "transport": "Transport",
+    "fun": "Fun",
+    "deleteWarning": "This category already contains expenses. Deleting it may affect your statistics.",
+    "warning": "Warning",
+    "overallocated": "Your total budget exceeds your monthly income.", 
+    "reviewBudgets": "Your categories have changed. Consider reviewing your budget allocations.",
+    "savingsProgress": "Savings goal progress"
+  },
+
+  
+  "goals": {
+    "title": "Goals",
+    "newGoal": "Savings Goals",
+    "description": "Track what you're saving toward. Get warnings if you fall behind.",
+    "addGoal": "+ Add goal",
+    "empty": "No goals yet.\nTap + Add to create your first savings goal.",
+    "savingFor": "What are you saving for?",
+    "placeholder": "e.g. Trip to Japan, New laptop...",
+    "chooseIcon": "Choose an icon",
+    "targetAmount": "Target amount",
+    "alreadySaved": "Already saved",
+    "createGoal": "Create goal",
+    "fillFields": "Fill in name and target amount.",
+    "addFunds": "+ Add funds",
+    "addFundsQuestion": "How much are you adding?",
+    "deleteGoal": "Delete goal?",
+    "daysLeft": "days left",
+    "toGo": "to go",
+    "done": "Done!",
+    "completed": "Completed",
+    "completedMessage": "Completed!"
+  },
+
+  "subscriptions": {
+    "title": "Subscriptions",
+    "subtitle": "Track every subscription. Cancel the ones you don't use.",
+
+    "howCancel": "How to cancel",
+    "negotiateWith": "Negotiate with",
+
+    "enterName": "Enter a service name.",
+
+    "addSubscription": "Add subscription",
+    "quickAdd": "Quick add",
+    "serviceName": "Service name",
+    "servicePlaceholder": "e.g. Netflix, Gym...",
+    "icon": "Icon",
+    "monthlyCost": "Monthly cost",
+
+    "removeTitle": "Remove subscription?",
+
+    "usage": "Usage",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "rarely": "Rarely",
+    "never": "Never",
+
+    "keep": "✓ Keep",
+    "cancel": "✕ Cancel",
+    "negotiateBtn": "↕ Negotiate",
+
+    "totalMonth": "Total/month",
+    "year": "year",
+    "saving": "Potential saving",
+    "monthShort": "/mo",
+
+    "total": "Total",
+    "review": "Review",
+    "negotiate": "Negotiate",
+
+    "add": "+ Add subscription",
+
+    "empty": "No subscriptions tracked yet.\nTap Add to get started.",
+
+    "needReview": "Needs review",
+    "cancelThese": "Cancel these — saving",
+    "negotiateThese": "Negotiate these",
+    "keeping": "Keeping",
+
+    "yearSaving": "💡 Cancelling flagged subscriptions saves {{amount}} per year.",
+
+    "alternative": "Alternative",
+
+    "howToCancel": "How to cancel →",
+    "script": "Script →"
+  },
+
+  
+  "insights": {
+    "title": "Insights",
+    "subtitle": "Month-to-date overview",
+    "incomeSpent": "of income spent",
+    "savingGoal": "saving (goal {{goal}}%)",
+    "transactions": "transactions",
+    "dayStreak": "day streak",
+    "byCategory": "Spending by category",
+    "topDays": "Top spending days",
+    "smartTips": "Smart tips",
+    "reset": "Reset all data",
+    "resetQuestion": "Reset all data?",
+    "budgetWarning": "⚠ {{category}} is at {{percent}}% — almost full.",
+    "savingWarning": "📉 Saving {{current}}%, below your {{goal}}% goal.",
+    "good": "✅ Your finances look great! Keep it up."
+  },
+
+
+  "report": {
+    "title": "Monthly Report",
+    "share": "Share 📤",
+    "summary": "{{month}} Summary",
+    "income": "Income",
+    "spent": "Spent",
+    "saved": "Saved",
+    "ofIncomeSpent": "of income spent",
+    "savingsRate": "savings rate",
+    "transactions": "transactions",
+    "averageTransaction": "avg transaction",
+    "byCategory": "By category",
+    "categoryAmount": "{{amount}} ({{percent}}%)",
+    "streakTitle": "{{days}}-day spending streak",
+    "streakSubtitle": "Under budget for {{days}} consecutive days!",
+    "goalsCompleted": "{{count}} savings goal completed!",
+    "goalsCompleted_plural": "{{count}} savings goals completed!",
+    "insightSpent": "⚠️ You spent {{percent}}% of income. Try to reduce spending next month.",
+    "insightSaved": "🌟 You hit your {{goal}}% savings goal! Saved {{amount}} this month.",
+    "insightCategory": "📊 Biggest expense: {{category}} at {{amount}}.",
+    "insightEmpty": "✓ Keep logging your transactions to get better insights.",
+    "shareText": "FinyWise — {{month}}\n\nIncome: {{income}}\nSpent: {{spent}} ({{spentPercent}}%)\nSaved: {{saved}} ({{savedPercent}}%)\nTransactions: {{transactions}}\nStreak: {{streak}} days 🔥\n\n{{insight}}\n\nTracked with FinyWise"
+  },
+
+  "challenges": {
+    "title": "Challenges",
+    "subtitle": "Build better money habits and earn rewards.",
+    "abandonTitle": "Abandon challenge?",
+    "abandonMessage": "Your progress will be lost.",
+    "abandon": "Abandon",
+    "activeTitle": "Active Challenge",
+    "availableTitle": "Available Challenges",
+    "lockedTitle": "Other Challenges",
+    "daysLeft": "days left",
+    "startNew": "Start New Challenge",
+    "reward": "Reward: {{reward}}",
+    "completed": "Challenge completed! Reward: {{reward}}",
+    "meta": "{{days}} days • Reward {{reward}}",
+    "dayProgress": "Day {{daysIn}} / {{total}}",
+
+    "streak": {
+      "current": "Current Streak",
+      "unit": "days",
+      "tip": "Keep going!",
+      "firstTip": "Complete your first challenge to start a streak."
+    },
+
+    "items": {
+      "nospend3": {
+        "name": "3-Day No-Spend Challenge",
+        "desc": "Avoid unnecessary spending for 3 days."
+      },
+      "weekend": {
+        "name": "No-Spend Weekend",
+        "desc": "Spend nothing during the weekend."
+      },
+      "cook5": {
+        "name": "Cook at Home",
+        "desc": "Cook your meals at home for 5 days."
+      },
+      "save10": {
+        "name": "Save 10%",
+        "desc": "Save at least 10% of your income this month."
+      },
+      "budget30": {
+        "name": "Stay on Budget",
+        "desc": "Stay within your budget for 30 days."
+      }
+    }  
+  },
+
+  "settings": {
+  "title": "Settings",
+  "subtitle": "Customize your FinyWise experience",
+  "language": "Language"
+  },
+
+  "onboarding": {
+    "welcome": "Welcome to FinyWise",
+    "subtitle": "Your smart financial co-pilot.\nLet's set up your profile.",
+    "name": "Your name",
+    "namePlaceholder": "e.g. Alex",
+    "currency": "Currency",
+    "income": "Monthly income",
+    "savingsGoal": "Savings goal (%)",
+    "start": "Get started →",
+    "note": "Data stays on your device. No account needed.",
+    "enterName": "Please enter your name."
+  },
+
+  
+  "more": {
+    "title": "More",
+    "subtitle": "All FinyWise features",
+
+    "activities": "Activities",
+    "activitiesSub": "Plan outings & events",
+
+    "recurring": "Recurring Expenses",
+    "recurringSub": "Auto-deduct fixed monthly costs",
+
+    "split": "Bill Split",
+    "splitSub": "Split bills fairly with friends",
+
+    "challenges": "Challenges",
+    "challengesSub": "Spending streaks & habit goals",
+
+    "report": "Monthly Report",
+    "reportSub": "Your full month in numbers",
+
+    "insights": "Insights",
+    "insightsSub": "Charts, trends & smart tips",
+
+    "settings": "Settings",
+    "settingsSub": "Language, preferences and app options",
+
+    "reset": "Reset all data",
+    "resetQuestion": "Reset all data?",
+    "resetWarning": "This cannot be undone."
+  },
+
+
+  "transactions": {
+  "recent": "Recent transactions",
+  "log": "Log a transaction",
+  "logTitle": "Log Transaction",
+  "description": "Description",
+  "descriptionPlaceholder": "e.g. Grocery shopping",
+  "amount": "Amount",
+  "type": "Type",
+  "expense": "Expense",
+  "income": "Income",
+  "category": "Category"
+  },
+
+  "decide": {
+    "title": "Smart Advisor",
+    "subtitle": "Ask FinyWise whether you can afford something right now.",
+    "activity": "Activity",
+    "purchase": "Purchase",
+    "watchlist": "Watchlist",
+    "activityQuestion": "What's the activity?",
+    "activityPlaceholder": "e.g. Dinner with friends",
+    "estimatedCost": "Estimated cost",
+    "analyze": "Analyze ✦",
+    "buyQuestion": "What do you want to buy?",
+    "productPlaceholder": "e.g. Laptop",
+    "price": "Price",
+    "canWait": "Can it wait?",
+    "flexible": "Flexible",
+    "soon": "Soon",
+    "urgent": "Urgent",
+    "productName": "Product name",
+    "currentPrice": "Current price",
+    "targetPrice": "Target price",
+    "store": "Store",
+    "addWatchlist": "Add to watchlist ✦",
+    "watchlistTitle": "Price watchlist",
+    "noItems": "No items yet.\nAdd a product above.",
+    "enterActivity": "Enter an activity name.",
+    "addedWatchlist": "Added to watchlist!",
+    "freeTitle": "It's free!",
+    "freeMessage": "This costs nothing — go enjoy yourself!",
+    "notRecommended": "Not recommended",
+    "cannotAfford": "Cannot afford this",
+    "categoryLimit": "Category over limit",
+    "thinkTwice": "Think twice",
+    "goForIt": "Go for it! ✓",
+    "wait": "Wait — save up first",
+    "tight": "Tight — but possible",
+    "considerWaiting": "Consider waiting",
+    "goodToGo": "Good to go ✓",
+  "notReccomended": "Not recommended",
+
+  "overBudget": "You're already over budget by {{amount}}.",
+  "cannotAffordMessage": "This costs {{cost}} but you only have {{remaining}} left.",
+  "categoryMessage": "Only {{remaining}} left in {{category}}.",
+  "incomeMessage": "{{cost}} is over 15% of your income.",
+  "goForItMessage": "You can comfortably afford this. You'll still have {{remaining}} left!",
+
+  "watch": {
+  "canNow": "✓ You can already afford this!",
+  "cannotTarget": "Even at the target price of {{target}}, you can't afford it yet.",
+  "waitForDrop": "Waiting for a {{percent}}% drop ({{savings}} savings). {{advice}}",
+  "affordTarget": "Can afford at target.",
+  "keepSaving": "Keep saving.",
+  "belowTarget": "Price is at or below target. {{advice}}",
+  "buyNow": "Buy now!",
+  "almostThere": "Almost there."
+  },
+
+   "enterProduct": "Enter a product name.",
+
+  "affordInMonths": "You can't comfortably buy this now. You could afford it in about {{months}} month.",
+  "shortBy": "This purchase is urgent, but you're short by {{amount}}.",
+  "highIncomePercent": "{{price}} is {{percent}}% of your income. Waiting for a better price may be a smart choice.",
+  "canAffordProduct": "You can afford {{product}}. You'll still have {{amount}} left afterward.",
+
+  "affordInMonths_one": "You could afford it in about {{months}} month.",
+"affordInMonths_other": "You could afford it in about {{months}} months."
+  },
+
+  "recurring": {
+    "fillFields": "Please fill in all required fields.",
+    "addExpense": "Add Recurring Expense",
+    "namePlaceholder": "e.g. Rent, Netflix, Phone bill",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "yearly": "Yearly",
+
+    "remove": "Remove recurring expense?",
+    "removeMessage": "This recurring expense will be deleted.",
+
+    "title": "Recurring Expenses",
+    "subtitle": "Track subscriptions and bills that repeat automatically.",
+
+    "addButton": "+ Add recurring expense",
+
+    "empty": "No recurring expenses yet.\nTap Add to create one.",
+
+    "applied": "Applied",
+    "pending": "Pending",
+
+    "tip": "Recurring expenses help you predict future spending and stay on budget.",
+    
+    "number": "0"
+  },
+
+  "split": {
+    "title": "Bill Split",
+    "subtitle": "Split expenses fairly with friends and family.",
+
+    "equal": "Equal Split",
+    "custom": "Custom Split",
+
+    "enterTotal": "Please enter the total bill amount.",
+
+    "totalBill": "Total Bill",
+    "description": "Description",
+    "descriptionPlaceholder": "e.g. Dinner, Movie tickets...",
+
+    "people": "Number of People",
+    "extra": "Extra amount for you",
+
+    "calculate": "Calculate",
+
+    "amount": "Amount",
+
+    "addPerson": "+ Add Person",
+    "removePerson": "Remove Person",
+
+    "results": "Results",
+
+    "basePerPerson": "Base per person",
+    "yourShare": "Your share",
+    "otherPerson": "Each other person",
+
+    "logShare": "Log {{amount}} expense",
+    "logMyShare": "Log my share ({{amount}})",
+
+    "totalAllocated": "Total allocated",
+
+    "done": "✓ Balanced",
+    "remaining": "remaining",
+    "over": "over",
+
+    "logged": "Expense logged",
+    "loggedMessage": "{{amount}} has been added to your transactions.",
+
+    "defaultDescription": "Bill split"
+  },
+
+  "language": {
+  "title": "Language"
+   }
+}

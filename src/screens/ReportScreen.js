@@ -3,11 +3,14 @@ import { View, Text, ScrollView, StyleSheet, Share } from 'react-native';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 export default function ReportScreen({ navigation }) {
   const { state } = useAppState();
   const { fmt, totalSpent, availableBalance, savingsAmount, healthScore } = useComputed();
   const { budgets, transactions, savingsGoals, streak, profile } = state;
+  const { t } = useTranslation();
 
   const inc = profile.monthlyIncome || 1;
   const spent = totalSpent;
@@ -21,13 +24,23 @@ export default function ReportScreen({ navigation }) {
   const monthName = new Date().toLocaleString('default',{month:'long',year:'numeric'});
 
   let insight = '';
-  if (spentR>90) insight = `⚠️ You spent ${spentR}% of income. Try to reduce spending next month.`;
-  else if (savR>=profile.savingsGoal) insight = `🌟 You hit your ${profile.savingsGoal}% savings goal! Saved ${fmt(saved)} this month.`;
-  else if (cats.length) insight = `📊 Biggest expense: ${cats[0].name} at ${fmt(cats[0].spent)}.`;
-  else insight = '✓ Keep logging your transactions to get better insights.';
+  if (spentR > 90) insight = t('report.insightSpent', { percent: spentR });
+  else if (savR >= profile.savingsGoal) insight = t('report.insightSaved', { goal: profile.savingsGoal, amount: fmt(saved),});
+  else if (cats.length) insight = t('report.insightCategory', { category: cats[0].name, amount: fmt(cats[0].spent),});
+  else insight = t('report.insightEmpty');
 
   const handleShare = async () => {
-    const text = `FinyWise — ${monthName}\n\nIncome: ${fmt(inc)}\nSpent: ${fmt(spent)} (${spentR}%)\nSaved: ${fmt(saved)} (${savR}%)\nTransactions: ${txCount}\nStreak: ${(streak||{}).current||0} days 🔥\n\n${insight}\n\nTracked with FinyWise`;
+    const text = t('report.shareText', {
+  month: monthName,
+  income: fmt(inc),
+  spent: fmt(spent),
+  spentPercent: spentR,
+  saved: fmt(saved),
+  savedPercent: savR,
+  transactions: txCount,
+  streak: (streak || {}).current || 0,
+  insight,
+});
     await Share.share({ message: text });
   };
 
@@ -40,25 +53,25 @@ export default function ReportScreen({ navigation }) {
       showsVerticalScrollIndicator={false}
     >
       <View style={s.headerRow}>
-        <Text style={s.title}>Monthly Report</Text>
-        <Button label="Share 📤" variant="secondary" size="sm" onPress={handleShare}/>
+        <Text style={s.title}>{t('report.title')}</Text>
+        <Button label={t('report.share')} variant="secondary" size="sm" onPress={handleShare}/>
       </View>
 
       <View style={s.reportCard}>
         <View style={s.reportHeader}>
           <Text style={s.reportLogo}>Finy<Text style={{color:colors.accent}}>Wise</Text></Text>
-          <Text style={s.reportMonth}>{monthName} Summary</Text>
+          <Text style={s.reportMonth}>{t('report.summary', { month: monthName })}</Text>
           <View style={s.summaryRow}>
             <View style={s.summaryItem}>
-              <Text style={s.summaryLabel}>Income</Text>
+              <Text style={s.summaryLabel}>{t('report.income')}</Text>
               <Text style={s.summaryVal}>{fmt(inc)}</Text>
             </View>
             <View style={s.summaryItem}>
-              <Text style={s.summaryLabel}>Spent</Text>
+              <Text style={s.summaryLabel}>{t('report.spent')}</Text>
               <Text style={[s.summaryVal,{color:colors.danger}]}>{fmt(spent)}</Text>
             </View>
             <View style={s.summaryItem}>
-              <Text style={s.summaryLabel}>Saved</Text>
+              <Text style={s.summaryLabel}>{t('report.saved')}</Text>
               <Text style={[s.summaryVal,{color:colors.success}]}>{fmt(saved)}</Text>
             </View>
           </View>
@@ -68,32 +81,32 @@ export default function ReportScreen({ navigation }) {
           <View style={s.statGrid}>
             <View style={s.statCard}>
               <Text style={[s.statNum,{color:spentR>80?colors.danger:spentR>60?colors.warning:colors.text}]}>{spentR}%</Text>
-              <Text style={s.statLabel}>of income spent</Text>
+              <Text style={s.statLabel}>{t('report.ofIncomeSpent')}</Text>
             </View>
             <View style={s.statCard}>
               <Text style={[s.statNum,{color:savR>=profile.savingsGoal?colors.success:colors.warning}]}>{savR}%</Text>
-              <Text style={s.statLabel}>savings rate</Text>
+              <Text style={s.statLabel}>{t('report.savingsRate')}</Text>
             </View>
             <View style={s.statCard}>
               <Text style={s.statNum}>{txCount}</Text>
-              <Text style={s.statLabel}>transactions</Text>
+              <Text style={s.statLabel}>{t('report.transactions')}</Text>
             </View>
             <View style={s.statCard}>
               <Text style={s.statNum}>{fmt(avgTx)}</Text>
-              <Text style={s.statLabel}>avg transaction</Text>
+              <Text style={s.statLabel}>{t('report.averageTransaction')}</Text>
             </View>
           </View>
 
           {cats.length > 0 && (
             <>
-              <Text style={s.sectionLabel}>By category</Text>
+              <Text style={s.sectionLabel}>{t('report.byCategory')}</Text>
               {cats.slice(0,5).map(b => {
                 const p = pct(b.spent, inc);
                 return (
                   <View key={b.id} style={{marginBottom:10}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',marginBottom:4}}>
-                      <Text style={{fontSize:13,color:colors.text}}>{b.icon} {b.name}</Text>
-                      <Text style={{fontSize:12,color:colors.muted}}>{fmt(b.spent)} ({p}%)</Text>
+                      <Text style={{fontSize:13,color:colors.text}}>{b.icon} {b.key ? t(`budget.${b.key}`) : b.name}</Text>
+                      <Text style={{fontSize:12,color:colors.muted}}>{t('report.categoryAmount', {amount: fmt(b.spent), percent: p,})}</Text>
                     </View>
                     <View style={s.progressWrap}>
                       <View style={[s.progressBar,{width:`${p}%`,backgroundColor:b.color}]}/>
@@ -108,8 +121,8 @@ export default function ReportScreen({ navigation }) {
             <View style={s.streakBox}>
               <Text style={{fontSize:28}}>🔥</Text>
               <View>
-                <Text style={{fontSize:13,fontWeight:'600',color:colors.text}}>{streak.current}-day spending streak</Text>
-                <Text style={{fontSize:11,color:colors.muted}}>Under budget for {streak.current} consecutive days!</Text>
+              <Text style={{fontSize:13,fontWeight:'600',color:colors.text}}>{t('report.streakTitle', {days: streak.current,})}</Text>
+                <Text style={{fontSize:11,color:colors.muted}}>{t('report.streakSubtitle', {days: streak.current,})}</Text>
               </View>
             </View>
           )}
@@ -117,7 +130,7 @@ export default function ReportScreen({ navigation }) {
           {goalsMet > 0 && (
             <View style={s.goalsBox}>
               <Text style={{fontSize:24}}>🎯</Text>
-              <Text style={{fontSize:13,fontWeight:'600',color:colors.success,marginTop:4}}>{goalsMet} savings goal{goalsMet>1?'s':''} completed!</Text>
+              <Text style={{fontSize:13,fontWeight:'600',color:colors.success,marginTop:4}}>{t('report.goalsCompleted', {count: goalsMet,})}</Text>
             </View>
           )}
 

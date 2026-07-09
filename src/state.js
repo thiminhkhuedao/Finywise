@@ -17,10 +17,19 @@ const initialState = {
   activeChallenge: null,
   challengeStartDate: null,
 };
-
+ 
 function reducer(state, action) {
   switch (action.type) {
-    case 'LOAD':           return { ...action.payload, loaded: true };
+    
+    case 'LOAD': {
+    const map = {  Housing: 'housing', Food: 'food', Transport: 'transport', Fun: 'fun', Logement: 'housing', Nourriture: 'food', Transport: 'transport', Loisirs: 'fun',};
+    const budgets = (action.payload.budgets || []).map(b => {if (b.key) return b;
+    return {  ...b, key: map[b.name] || null,};});
+
+     console.log("Migrated budgets:", budgets);
+
+    return { ...action.payload, budgets, loaded: true,};}
+
     case 'RESET':          return { ...initialState, loaded: true };
     case 'SET_PROFILE':    return { ...state, profile: { ...state.profile, ...action.payload } };
     case 'ADD_BUDGET':     return { ...state, budgets: [...state.budgets, action.payload] };
@@ -107,18 +116,37 @@ export function useComputed() {
   const totalAllocated = budgets.reduce((s, b) => s + b.allocated, 0);
   const income = profile.monthlyIncome || 0;
   const availableBalance = income - totalSpent;
-  const savingsAmount = Math.max(0, income - totalAllocated);
-  const healthScore = (() => {
-    if (!income) return 50;
-    const r = totalSpent / income, sr = savingsAmount / income;
-    let sc = 100;
-    if (r > 0.9) sc -= 40; else if (r > 0.7) sc -= 20; else if (r > 0.5) sc -= 10;
-    if (sr < 0.1) sc -= 20; else if (sr < 0.2) sc -= 10;
-    return Math.max(10, Math.min(100, Math.round(sc)));
-  })();
+  const savingsAmount = income - totalSpent;
+  const savingsRate =
+  income > 0 ? (savingsAmount / income) * 100 : 0;
+  const goalAmount =
+  income * (profile.savingsGoal / 100);
+
+  const goalProgress =
+  goalAmount === 0
+    ? 0
+    : (savingsAmount / goalAmount) * 100;
+
+  const r = income > 0 ? totalSpent / income : 0;
+const sr = income > 0 ? savingsAmount / income : 0;
+
+const healthScore = (() => {
+  if (!income) return 50;
+
+  let sc = 100;
+
+  if (r > 0.9) sc -= 40;
+  else if (r > 0.7) sc -= 20;
+  else if (r > 0.5) sc -= 10;
+
+  if (sr < 0.1) sc -= 20;
+  else if (sr < 0.2) sc -= 10;
+
+  return Math.max(10, Math.min(100, Math.round(sc)));
+})();
   const fmt = (n) => (profile.currency || '€') + Number(n).toFixed(2).replace(/\.00$/, '');
   const pct = (s, t) => !t ? 0 : Math.min(100, Math.round((s / t) * 100));
-  return { totalSpent, totalAllocated, income, availableBalance, savingsAmount, healthScore, fmt, pct };
+  return { totalSpent, totalAllocated, income, availableBalance, savingsAmount, savingsRate, progress, goalAmount, goalProgress, healthScore, r, sr, fmt, pct,};
 }
 
 export function uid() {

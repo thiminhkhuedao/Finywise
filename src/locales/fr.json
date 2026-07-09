@@ -1,0 +1,484 @@
+{
+  "common": {
+    "add": "Ajouter",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "done": "Terminé",
+    "continue": "Continuer",
+    "back": "Retour",
+    "yes": "Oui",
+    "no": "Non",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "start": "Start",
+    "abandon": "Abandon",
+    "name": "Nom"
+  },
+
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "budget": "Budget",
+    "goals": "Objectifs",
+    "activities": "Activités",
+    "challenges": "Défis",
+    "insights": "Analyses",
+    "report": "Rapports",
+    "subscriptions": "Abonnements",
+    "split": "Partage",
+    "settings": "Paramètres",
+    "more": "Plus"
+  },
+
+  "dashboard": {
+    "title": "Tableau de bord",
+    "income": "Revenus",
+    "expenses": "Dépenses",
+    "balance": "Solde",
+    "savings": "Épargne",
+    "greeting": "Bonjour,",
+    "available": "Disponible ce mois-ci",
+    "streak": "Série de dépenses",
+    "days_under_budget": "jours sous le budget",
+    "health": {"healthy": "Excellent", "caution": "Attention", "risk": "Risque" }
+  },
+
+  "activities": {
+    "title": "Activités",
+    "planned": "Planifiées",
+    "done": "Terminées",
+    "plan_title": "Planifier une activité",
+    "name": "Nom de l'activité",
+    "name_placeholder": "Ex. : Cinéma, Restaurant, Concert...",
+    "cost": "Coût",
+    "date": "Date",
+    "notes": "Notes",
+    "notes_placeholder": "Notes facultatives",
+    "no_planned": "Aucune activité planifiée.\nAppuyez sur + Ajouter pour en créer une.",
+    "no_done": "Aucune activité terminée pour le moment.",
+    "mark_done": "Marquer comme terminée ?",
+    "mark_done_desc": "Le coût sera enregistré comme une transaction.",
+    "delete": "Supprimer",
+    "delete_confirm": "Supprimer ?",
+    "done_button": "✓ Terminé",
+    "delete_button": "✕ Supprimer",
+    "save": "Enregistrer"
+  },
+
+  "budget": {
+    "title": "Budget",
+    "income": "Revenus",
+    "budgeted": "Budgétisé",
+    "free": "Disponible",
+    "categories": "Catégories",
+    "all_transactions": "Toutes les transactions",
+    "no_categories": "Aucune catégorie.\nAppuyez sur Ajouter.",
+    "no_transactions": "Aucune transaction.",
+    "uncategorized": "Non catégorisé",
+    "delete_category": "Supprimer la catégorie ?",
+    "new_category": "Nouvelle catégorie",
+    "namePlaceholder": "Nom",
+    "icon": "Icône",
+    "monthly_budget": "Budget mensuel",
+    "color": "Couleur",
+    "enter_name": "Entrez un nom.",
+    "example": "ex. Santé",
+    "housing": "Logement",
+    "food": "Alimentation",
+    "transport": "Transport",
+    "fun": "Loisirs", 
+    "freeTitle": "Gratuit",
+  "freeMessage": "Cela ne coûte rien.",
+  "notReccomended": "Déconseillé",
+  "cannotAfford": "Impossible à payer",
+  "categoryLimit": "Limite de catégorie",
+  "thinkTwice": "Réfléchissez-y",
+  "goForIt": "Pourquoi pas",
+  "deleteWarning": "Cette catégorie contient déjà des dépenses. Les supprimer pourrait modifier vos statistiques.",
+  "warning": "Attention",
+  "overallocated": "Le total de vos budgets dépasse votre revenu mensuel.",
+  "reviewBudgets": "Vos catégories ont changé. Pensez à vérifier vos montants budgétaires.",
+  "savingsProgress": "Progression vers votre objectif d'épargne",
+
+  "overBudget": "Vous dépassez déjà votre budget de {{amount}}.",
+  "cannotAffordMessage": "Cela coûte {{cost}} mais il ne vous reste que {{remaining}}.",
+  "categoryMessage": "Il ne reste que {{remaining}} dans {{category}}.",
+  "incomeMessage": "{{cost}} représente plus de 15 % de votre revenu.",
+  "goForItMessage": "Vous pouvez vous le permettre. Il vous restera encore {{remaining}} !",
+
+  "watch": {
+  "canNow": "✓ Vous pouvez déjà vous l'offrir !",
+  "cannotTarget": "Même au prix cible de {{target}}, vous ne pouvez pas encore vous le permettre.",
+  "waitForDrop": "Attendre une baisse de {{percent}} % (économie de {{savings}}). {{advice}}",
+  "affordTarget": "Vous pourrez l'acheter au prix cible.",
+  "keepSaving": "Continuez à économiser.",
+  "belowTarget": "Le prix est au niveau cible ou inférieur. {{advice}}",
+  "buyNow": "Achetez maintenant !",
+  "almostThere": "Vous y êtes presque."
+  },
+  "enterProduct": "Entrez un produit.",
+  "wait": "Attendre",
+  "tight": "Budget serré",
+  "considerWaiting": "Réfléchissez avant d'acheter",
+  "goodToGo": "Vous pouvez l'acheter",
+
+  "affordInMonths": "Vous ne pouvez pas encore acheter cela confortablement. Vous pourrez probablement vous le permettre dans environ {{months}} mois.",
+  "shortBy": "Cet achat est urgent, mais il vous manque {{amount}}.",
+  "highIncomePercent": "{{price}} représente {{percent}} % de votre revenu. Attendre une meilleure offre pourrait être une bonne idée.",
+  "canAffordProduct": "Vous pouvez acheter {{product}}. Il vous restera encore {{amount}}."
+  },
+
+  
+  "goals": {
+    "title" : "Objectifs",
+    "newGoal": "Objectifs d'épargne",
+    "description": "Suivez vos objectifs d'épargne et recevez des alertes si vous prenez du retard.",
+    "addGoal": "+ Ajouter un objectif",
+    "empty": "Aucun objectif.\nAppuyez sur + Ajouter pour commencer.",
+    "savingFor": "Pour quoi économisez-vous ?",
+    "placeholder": "Ex. : Voyage au Japon, nouvel ordinateur...",
+    "chooseIcon": "Choisissez une icône",
+    "targetAmount": "Montant ciblé",
+    "alreadySaved": "Déjà économisé",
+    "createGoal": "Créer l'objectif",
+    "fillFields": "Remplissez le nom et le montant cible.",
+    "addFunds": "+ Ajouter des fonds",
+    "addFundsQuestion": "Combien ajoutez-vous ?",
+    "deleteGoal": "Supprimer l'objectif ?",
+    "daysLeft": "jours restants",
+    "toGo": "restants",
+    "done": "Terminé !",
+    "completed": "Terminés",
+    "completedMessage": "Objectif atteint !"
+  },
+
+  "subscriptions": {
+    "title": "Abonnements",
+    "subtitle": "Suivez tous vos abonnements. Supprimez ceux que vous n'utilisez pas.",
+
+    "howCancel": "Comment résilier",
+    "negotiateWith": "Négocier avec",
+
+    "enterName": "Entrez le nom du service.",
+
+    "addSubscription": "Ajouter un abonnement",
+    "quickAdd": "Ajout rapide",
+    "serviceName": "Nom du service",
+    "servicePlaceholder": "Ex. Netflix, Salle de sport...",
+    "icon": "Icône",
+    "monthlyCost": "Coût mensuel",
+
+    "removeTitle": "Supprimer l'abonnement ?",
+
+    "usage": "Utilisation",
+    "daily": "Quotidien",
+    "weekly": "Hebdomadaire",
+    "monthly": "Mensuel",
+    "rarely": "Rarement",
+    "never": "Jamais",
+
+    "keep": "✓ Garder",
+    "cancel": "✕ Résilier",
+    "negotiateBtn": "↕ Négocier",
+
+    "totalMonth": "Total/mois",
+    "year": "an",
+    "saving": "Économie potentielle",
+    "monthShort": "/mois",
+
+    "total": "Total",
+    "review": "À revoir",
+    "negotiate": "Négocier",
+
+    "add": "+ Ajouter un abonnement",
+
+    "empty": "Aucun abonnement suivi.\nAppuyez sur Ajouter pour commencer.",
+
+    "needReview": "À examiner",
+    "cancelThese": "À résilier — économie de",
+    "negotiateThese": "À négocier",
+    "keeping": "Conservés",
+
+    "yearSaving": "💡 Résilier les abonnements signalés permet d'économiser {{amount}} par an.",
+
+    "alternative": "Alternative",
+
+    "howToCancel": "Comment résilier →",
+    "script": "Script →"
+  },
+  
+  "insights": {
+    "title": "Analyses",
+    "subtitle": "Vue d'ensemble du mois",
+    "incomeSpent": "du revenu dépensé",
+    "savingGoal": "épargne (objectif {{goal}}%)",
+    "transactions": "transactions",
+    "dayStreak": "jours de série",
+    "byCategory": "Dépenses par catégorie",
+    "topDays": "Jours les plus dépensiers",
+    "smartTips": "Conseils intelligents",
+    "reset": "Réinitialiser les données",
+    "resetQuestion": "Réinitialiser toutes les données ?",
+    "budgetWarning": "⚠ {{category}} est à {{percent}} % — presque atteint.",
+    "savingWarning": "📉 Épargne de {{current}} %, inférieure à l'objectif de {{goal}} %.",
+    "good": "✅ Vos finances sont en bonne santé ! Continuez ainsi."
+  },
+
+
+  "report": {
+    "title": "Rapport mensuel",
+    "share": "Partager 📤",
+    "summary": "Résumé de {{month}}",
+    "income": "Revenus",
+    "spent": "Dépensé",
+    "saved": "Épargné",
+    "ofIncomeSpent": "des revenus dépensés",
+    "savingsRate": "taux d'épargne",
+    "transactions": "transactions",
+    "averageTransaction": "transaction moyenne",
+    "byCategory": "Par catégorie",
+    "categoryAmount": "{{amount}} ({{percent}}%)",
+    "streakTitle": "Série de {{days}} jours",
+    "streakSubtitle": "Sous le budget pendant {{days}} jours consécutifs !",
+    "goalsCompleted": "{{count}} objectif atteint !",
+    "goalsCompleted_plural": "{{count}} objectifs atteints !",
+    "insightSpent": "⚠️ Vous avez dépensé {{percent}} % de vos revenus. Essayez de réduire vos dépenses le mois prochain.",
+    "insightSaved": "🌟 Vous avez atteint votre objectif d'épargne de {{goal}} % ! Vous avez économisé {{amount}} ce mois-ci.",
+    "insightCategory": "📊 Plus grande dépense : {{category}} avec {{amount}}.",
+    "insightEmpty": "✓ Continuez à enregistrer vos transactions pour obtenir de meilleures analyses.",
+    "shareText": "FinyWise — {{month}}\n\nRevenus : {{income}}\nDépensé : {{spent}} ({{spentPercent}}%)\nÉpargné : {{saved}} ({{savedPercent}}%)\nTransactions : {{transactions}}\nSérie : {{streak}} jours 🔥\n\n{{insight}}\n\nSuivi avec FinyWise"
+  },
+
+  "challenges": {
+    "title": "Défis",
+    "subtitle": "Développez de meilleures habitudes financières et gagnez des récompenses.",
+    "abandonTitle": "Abandonner le défi ?",
+    "abandonMessage": "Votre progression sera perdue.",
+    "abandon": "Abandonner",
+    "activeTitle": "Défi en cours",
+    "availableTitle": "Défis disponibles",
+    "lockedTitle": "Autres défis",
+    "daysLeft": "jours restants",
+    "startNew": "Commencer un nouveau défi",
+    "reward": "Récompense : {{reward}}",
+    "completed": "Défi terminé ! Récompense : {{reward}}",
+    "meta": "{{days}} jours • Récompense {{reward}}",
+    "dayProgress": "Jour {{daysIn}} / {{total}}",
+
+    "streak": {
+      "current": "Série actuelle",
+      "unit": "jours",
+      "tip": "Continuez comme ça !",
+      "firstTip": "Terminez votre premier défi pour commencer une série."
+    },
+
+    "items": {
+      "nospend3": {
+        "name": "Défi 3 jours sans dépenses",
+        "desc": "Évitez les dépenses inutiles pendant 3 jours."
+      },
+      "weekend": {
+        "name": "Week-end sans dépenses",
+        "desc": "Ne dépensez rien pendant le week-end."
+      },
+      "cook5": {
+        "name": "Cuisine maison",
+        "desc": "Préparez vos repas à la maison pendant 5 jours."
+      },
+      "save10": {
+        "name": "Épargner 10 %",
+        "desc": "Épargnez au moins 10 % de vos revenus ce mois-ci."
+      },
+      "budget30": {
+        "name": "Respecter son budget",
+        "desc": "Restez dans votre budget pendant 30 jours."
+      }
+    }
+  },
+
+  "settings": {
+  "title": "Settings",
+  "subtitle": "Customize your FinyWise experience",
+  "language": "Language"
+  },
+
+  "onboarding": {
+    "welcome": "Bienvenue sur FinyWise",
+    "subtitle": "Votre copilote financier intelligent.\nConfigurons votre profil.",
+    "name": "Votre nom",
+    "namePlaceholder": "ex. Alex",
+    "currency": "Devise",
+    "income": "Revenu mensuel",
+    "savingsGoal": "Objectif d'épargne (%)",
+    "start": "Commencer →",
+    "note": "Les données restent sur votre appareil. Aucun compte nécessaire.",
+    "enterName": "Veuillez entrer votre nom."
+  },
+
+  
+  "more": {
+    "title": "Plus",
+    "subtitle": "Toutes les fonctionnalités FinyWise",
+
+    "activities": "Activités",
+    "activitiesSub": "Planifier des sorties et événements",
+
+    "recurring": "Dépenses récurrentes",
+    "recurringSub": "Déduire automatiquement les dépenses fixes",
+
+    "split": "Partage de facture",
+    "splitSub": "Partager les dépenses avec des amis",
+
+    "challenges": "Défis",
+    "challengesSub": "Séries d'épargne et habitudes",
+
+    "report": "Rapport mensuel",
+    "reportSub": "Votre mois en chiffres",
+
+    "insights": "Analyses",
+    "insightsSub": "Graphiques, tendances et conseils",
+
+    "settings": "Paramètres",
+    "settingsSub": "Langue, préférences et options",
+
+    "reset": "Réinitialiser les données",
+    "resetQuestion": "Réinitialiser toutes les données ?",
+    "resetWarning": "Cette action est irréversible."
+  },
+
+
+  "transactions": {
+    "log": "Ajouter une transaction",
+    "logTitle": "Ajouter une transaction",
+    "recent": "Transactions récentes",
+    "description": "Description",
+    "descriptionPlaceholder": "Ex. Courses",
+    "amount": "Montant",
+    "type": "Type",
+    "expense": "Dépense",
+    "income": "Revenu",
+    "category": "Catégorie"
+  },
+
+  "errors": {
+    "fillTransaction": "Veuillez remplir tous les champs."
+  },
+
+  "decide": {
+    "title": "Conseiller intelligent",
+    "subtitle": "Demandez à FinyWise si vous pouvez vous permettre quelque chose maintenant.",
+    "activity": "Activité",
+    "purchase": "Achat",
+    "watchlist": "Suivi",
+    "activityQuestion": "Quelle activité ?",
+    "activityPlaceholder": "Ex. dîner entre amis",
+    "estimatedCost": "Coût estimé",
+    "analyze": "Analyser ✦",
+    "buyQuestion": "Que voulez-vous acheter ?",
+    "productPlaceholder": "Ex. ordinateur portable",
+    "price": "Prix",
+    "canWait": "Cela peut attendre ?",
+    "flexible": "Flexible",
+    "soon": "Bientôt",
+    "urgent": "Urgent",
+    "productName": "Nom du produit",
+    "currentPrice": "Prix actuel",
+    "targetPrice": "Prix cible",
+    "store": "Magasin",
+    "addWatchlist": "Ajouter au suivi ✦",
+    "watchlistTitle": "Liste de suivi",
+    "noItems": "Aucun élément.\nAjoutez un produit ci-dessus.",
+    "enterActivity": "Entrez une activité.",
+    "enterProduct": "Entrez un produit.",
+    "addedWatchlist": "Ajouté à la liste !",
+    "freeTitle": "C'est gratuit !",
+    "freeMessage": "Cela ne coûte rien — profitez-en !",
+    "notRecommended": "Déconseillé",
+    "cannotAfford": "Impossible à financer",
+    "categoryLimit": "Catégorie dépassée",
+    "thinkTwice": "Réfléchissez-y",
+    "goForIt": "Allez-y ! ✓",
+    "wait": "Attendez et économisez",
+    "tight": "Possible, mais serré",
+    "considerWaiting": "Envisagez d'attendre",
+    "goodToGo": "C'est bon ✓"
+  },
+
+
+  "recurring": {
+    "fillFields": "Veuillez remplir tous les champs obligatoires",
+    "addExpense": "Ajouter une dépense récurrente",
+    "namePlaceholder": "Par ex. : loyer, Netflix, facture de téléphone",
+    "monthly": "Mensuel",
+    "weekly": "Hebdomadaire",
+    "yearly": "Annuel",
+
+    "remove": "Supprimer la dépense récurrente",
+    "removeMessage": "Cette dépense récurrente sera supprimée",
+
+    "title": "Frais récurrents",
+    "subtitle": "Suivez les abonnements et les factures à renouvellement automatique.",
+
+    "addButton": "+ Ajouter une dépense récurrente",
+
+    "empty": "Aucune dépense récurrente pour l'instant.\nAppuyer sur Ajouter pour en créer une.",
+
+    "applied": "Appliquée",
+    "pending": "En attente",
+
+    "tip": "Les dépenses récurrentes vous aident à prévoir les dépenses futures et à respecter votre budget.",
+  
+    "number": "0"
+  },
+
+  "split": {
+    "title": "Partage de dépenses",
+    "subtitle": "Répartissez les dépenses équitablement entre amis et famille.",
+
+    "equal": "Partage égal",
+    "custom": "Partage personnalisé",
+
+    "enterTotal": "Veuillez saisir le montant total.",
+
+    "totalBill": "Montant total",
+    "description": "Description",
+    "descriptionPlaceholder": "Ex. Restaurant, cinéma...",
+
+    "people": "Nombre de personnes",
+    "extra": "Montant supplémentaire pour vous",
+
+    "calculate": "Calculer",
+
+    "amount": "Montant",
+
+    "addPerson": "+ Ajouter une personne",
+    "removePerson": "Retirer une personne",
+
+    "results": "Résultats",
+
+    "basePerPerson": "Part de base par personne",
+    "yourShare": "Votre part",
+    "otherPerson": "Part des autres",
+
+    "logShare": "Enregistrer la dépense de {{amount}}",
+    "logMyShare": "Enregistrer ma part ({{amount}})",
+
+    "totalAllocated": "Total réparti",
+
+    "done": "✓ Équilibré",
+    "remaining": "restant",
+    "over": "en trop",
+
+    "logged": "Dépense enregistrée",
+    "loggedMessage": "{{amount}} a été ajouté à vos transactions.",
+
+    "defaultDescription": "Partage de dépenses"
+  },
+
+
+  "language": {
+    "title": "Langue"
+  }
+
+}

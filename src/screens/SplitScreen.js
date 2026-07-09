@@ -5,10 +5,12 @@ import { TextInput } from 'react-native';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
 
 export default function SplitScreen({ navigation }) {
   const { state, dispatch } = useAppState();
   const { fmt } = useComputed();
+  const { t } = useTranslation();
   const [tab, setTab] = useState('equal');
   const [total, setTotal] = useState('');
   const [desc, setDesc] = useState('');
@@ -18,29 +20,55 @@ export default function SplitScreen({ navigation }) {
   const [result, setResult] = useState(null);
 
   const calcEqual = () => {
-    const t = parseFloat(total)||0;
-    if (!t) return Alert.alert('Enter the total bill amount.');
-    const ex = parseFloat(extra)||0;
-    const base = t / count;
-    const myShare = base + ex;
-    setResult({ type:'equal', total:t, base, myShare, others:(t-myShare)/(count-1), count });
-  };
+  const totalAmount = parseFloat(total) || 0;
 
-  const calcCustom = () => {
-    const t = parseFloat(total)||0;
-    if (!t) return Alert.alert('Enter the total bill amount.');
-    const allocated = people.reduce((s,p)=>s+(parseFloat(p.amount)||0),0);
-    const rem = t - allocated;
-    setResult({ type:'custom', total:t, people, allocated, rem });
-  };
+  if (!totalAmount)
+    return Alert.alert(t('split.enterTotal'));
+
+  const ex = parseFloat(extra) || 0;
+  const base = totalAmount / count;
+  const myShare = base + ex;
+
+  setResult({
+    type: 'equal',
+    total: totalAmount,
+    base,
+    myShare,
+    others: (totalAmount - myShare) / (count - 1),
+    count,
+  });
+};
+
+const calcCustom = () => {
+  const totalAmount = parseFloat(total) || 0;
+
+  if (!totalAmount)
+    return Alert.alert(t('split.enterTotal'));
+
+  const allocated = people.reduce(
+    (s, p) => s + (parseFloat(p.amount) || 0),
+    0
+  );
+
+  const rem = totalAmount - allocated;
+
+  setResult({
+    type: 'custom',
+    total: totalAmount,
+    people,
+    allocated,
+    rem,
+  });
+};
+
 
   const logTx = (amount) => {
     if (!amount) return;
     dispatch({
       type:'ADD_TRANSACTION',
-      payload:{ id:Date.now().toString(36), desc: desc||'Bill split', amount, date:new Date().toISOString().slice(0,10), type:'expense', categoryId:null }
+      payload:{ id:Date.now().toString(36), desc: desc || t('split.defaultDescription'), amount, date:new Date().toISOString().slice(0,10), type:'expense', categoryId:null }
     });
-    Alert.alert('✓ Logged!', `${fmt(amount)} added to your transactions.`);
+    Alert.alert(t('split.logged'),t('split.loggedMessage', { amount: fmt(amount) }));
   };
 
   return (
@@ -49,26 +77,30 @@ export default function SplitScreen({ navigation }) {
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={s.title}>Bill Split Calculator</Text>
-      <Text style={s.sub}>Split any bill fairly. Log your share as a transaction.</Text>
+      <Text style={s.title}>{t('split.title')}</Text>
+      <Text style={s.sub}>{t('split.subtitle')}</Text>
 
       <View style={s.tabs}>
-        {['equal','custom'].map(t=>(
-          <TouchableOpacity key={t} style={[s.tab, tab===t&&s.tabActive]} onPress={()=>{setTab(t);setResult(null);}}>
-            <Text style={[s.tabText, tab===t&&s.tabTextActive]}>{t==='equal'?'Equal split':'Custom amounts'}</Text>
-          </TouchableOpacity>
+        {['equal','custom'].map(mode => (
+          <TouchableOpacity
+           key={mode}
+           style={[s.tab, tab===mode && s.tabActive]}
+           onPress={() => { setTab(mode); setResult(null);}}
+          >
+       <Text style={[s.tabText, tab===mode && s.tabTextActive]}> {mode === 'equal'  ? t('split.equal')  : t('split.custom')}</Text>
+       </TouchableOpacity>
         ))}
       </View>
 
       <Card>
-        <Text style={s.label}>Total bill amount</Text>
+        <Text style={s.label}>{t('split.totalBill')}</Text>
         <TextInput style={s.input} value={total} onChangeText={setTotal} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
-        <Text style={s.label}>Description (optional)</Text>
-        <TextInput style={s.input} value={desc} onChangeText={setDesc} placeholder="e.g. Dinner at Le Bistro" placeholderTextColor={colors.muted}/>
+        <Text style={s.label}>{t('split.description')}</Text>
+        <TextInput style={s.input} value={desc} onChangeText={setDesc} placeholder={t('split.descriptionPlaceholder')} placeholderTextColor={colors.muted}/>
 
         {tab === 'equal' ? (
           <>
-            <Text style={s.label}>Number of people</Text>
+            <Text style={s.label}>{t('split.people')}</Text>
             <View style={s.counter}>
               <TouchableOpacity style={s.counterBtn} onPress={()=>setCount(Math.max(2,count-1))}>
                 <Text style={s.counterBtnText}>−</Text>
@@ -78,9 +110,9 @@ export default function SplitScreen({ navigation }) {
                 <Text style={s.counterBtnText}>+</Text>
               </TouchableOpacity>
             </View>
-            <Text style={s.label}>Your extra items (optional)</Text>
+            <Text style={s.label}>{t('split.extra')}</Text>
             <TextInput style={s.input} value={extra} onChangeText={setExtra} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
-            <Button label="Calculate →" variant="primary" onPress={calcEqual}/>
+            <Button label={t('split.calculate')} variant="primary" onPress={calcEqual}/>
           </>
         ) : (
           <>
@@ -92,33 +124,33 @@ export default function SplitScreen({ navigation }) {
                   placeholderTextColor={colors.muted}/>
                 <TextInput style={[s.input,{width:90,marginBottom:0,textAlign:'right'}]} value={p.amount}
                   onChangeText={v=>{const np=[...people];np[i].amount=v;setPeople(np);}}
-                  keyboardType="numeric" placeholder="Amount" placeholderTextColor={colors.muted}/>
+                  keyboardType="numeric" placeholder={t('split.amount')} placeholderTextColor={colors.muted}/>
               </View>
             ))}
             <Row style={{gap:8,marginTop:8,marginBottom:16}}>
-              <Button label="+ Add person" variant="secondary" size="sm"
+              <Button label={t('split.addPerson')} variant="secondary" size="sm"
                 onPress={()=>setPeople([...people,{name:`Person ${people.length+1}`,amount:''}])}/>
-              {people.length>2&&<Button label="− Remove" variant="danger" size="sm"
+              {people.length>2&&<Button label={t('split.removePerson')} variant="danger" size="sm"
                 onPress={()=>setPeople(people.slice(0,-1))}/>}
             </Row>
-            <Button label="Calculate →" variant="primary" onPress={calcCustom}/>
+            <Button label={`${t('split.calculate')} →`} variant="primary" onPress={calcCustom}/>
           </>
         )}
       </Card>
 
       {result && (
         <Card style={s.resultCard}>
-          <Text style={s.resultTitle}>📊 Split results</Text>
+          <Text style={s.resultTitle}> {t('split.results')}</Text>
           {result.type==='equal' ? (
             <>
-              <View style={s.resultRow}><Text style={s.resultKey}>Total bill</Text><Text style={s.resultVal}>{fmt(result.total)}</Text></View>
-              <View style={s.resultRow}><Text style={s.resultKey}>Base per person</Text><Text style={s.resultVal}>{fmt(result.base)}</Text></View>
+              <View style={s.resultRow}><Text style={s.resultKey}>{t('split.totalBill')}</Text><Text style={s.resultVal}>{fmt(result.total)}</Text></View>
+              <View style={s.resultRow}><Text style={s.resultKey}>{t('split.basePerPerson')}</Text><Text style={s.resultVal}>{fmt(result.base)}</Text></View>
               <View style={[s.resultRow,s.resultHighlight]}>
-                <Text style={[s.resultKey,{color:colors.success,fontWeight:'700'}]}>Your share</Text>
+                <Text style={[s.resultKey,{color:colors.success,fontWeight:'700'}]}>{t('split.yourShare')}</Text>
                 <Text style={[s.resultVal,{color:colors.success,fontSize:20,fontWeight:'700'}]}>{fmt(result.myShare)}</Text>
               </View>
-              {result.count>1&&<View style={s.resultRow}><Text style={s.resultKey}>Each other person</Text><Text style={s.resultVal}>{fmt(result.others)}</Text></View>}
-              <Button label={`Log my share (${fmt(result.myShare)}) as transaction`} variant="primary" style={{marginTop:12}} onPress={()=>logTx(result.myShare)}/>
+              {result.count>1&&<View style={s.resultRow}><Text style={s.resultKey}>{t('split.otherPerson')}</Text><Text style={s.resultVal}>{fmt(result.others)}</Text></View>}
+              <Button label={t('split.logShare', {amount: fmt(result.myShare)})} variant="primary" style={{marginTop:12}} onPress={()=>logTx(result.myShare)}/>
             </>
           ) : (
             <>
@@ -126,20 +158,20 @@ export default function SplitScreen({ navigation }) {
                 <View key={i} style={s.resultRow}><Text style={s.resultKey}>{p.name}</Text><Text style={s.resultVal}>{fmt(parseFloat(p.amount)||0)}</Text></View>
               ))}
               <View style={s.resultRow}>
-                <Text style={s.resultKey}>Total allocated</Text>
+                <Text style={s.resultKey}>{t('split.totalAllocated')}</Text>
                 <Text style={[s.resultVal,{color:Math.abs(result.rem)<0.01?colors.success:colors.warning}]}>
-                  {fmt(result.allocated)} {Math.abs(result.rem)<0.01?'✓':`(${fmt(Math.abs(result.rem))} ${result.rem>0?'remaining':'over'})`}
+                  {fmt(result.allocated)} {Math.abs(result.rem)<0.01?  t('split.done'):`(${fmt(Math.abs(result.rem))} ${result.rem>0? t('split.remaining'): t('split.over')})`}
                 </Text>
               </View>
-              {Math.abs(result.rem)<0.01&&<Button label={`Log my share (${fmt(parseFloat(result.people[0].amount)||0)})`} variant="primary" style={{marginTop:12}} onPress={()=>logTx(parseFloat(result.people[0].amount)||0)}/>}
+              {Math.abs(result.rem)<0.01&&<Button label={t('split.logMyShare', {amount: fmt(parseFloat(result.people[0].amount) || 0)})}/>}
             </>
           )}
         </Card>
       )}
         </ScrollView>
   </SafeAreaView>
-);
-}
+);}
+
 
 const s = StyleSheet.create({
   container: { flex:1, backgroundColor:colors.bg },

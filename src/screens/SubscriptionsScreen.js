@@ -5,6 +5,7 @@ import { TextInput } from 'react-native';
 import { useAppState, useComputed } from '../state';
 import { Card, SectionTitle, Button, TipBox, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
+import { useTranslation } from 'react-i18next';
 
 const SUB_DB = {
   'Netflix':        {icon:'🎬',cat:'Entertainment',alt:'Disney+ (cheaper)'},
@@ -37,6 +38,7 @@ const NEGOTIATE_STEPS = [
 ];
 
 function ScriptModal({ visible, sub, type, onClose }) {
+  const { t } = useTranslation();
   if (!sub) return null;
   const steps = type === 'cancel' ? CANCEL_STEPS : NEGOTIATE_STEPS;
   return (
@@ -44,7 +46,7 @@ function ScriptModal({ visible, sub, type, onClose }) {
       <View style={s.overlay}>
         <View style={s.sheet}>
           <View style={s.handle}/>
-          <Text style={s.sheetTitle}>{type==='cancel'?'How to cancel':'Negotiate with'} {sub.name}</Text>
+          <Text style={s.sheetTitle}>{type==='cancel'? t('subscriptions.howCancel') : t('subscriptions.negotiateWith')} {sub.name}</Text>
           {steps.map((step,i) => (
             <View key={i} style={s.stepRow}>
               <View style={[s.stepNum,{backgroundColor:type==='cancel'?colors.danger:colors.warning}]}>
@@ -53,7 +55,7 @@ function ScriptModal({ visible, sub, type, onClose }) {
               <Text style={s.stepText}>{step}</Text>
             </View>
           ))}
-          <Button label="Close" variant="secondary" onPress={onClose} style={{marginTop:16}}/>
+          <Button label={t('common.close')} variant="secondary" onPress={onClose} style={{marginTop:16}}/>
         </View>
       </View>
     </Modal>
@@ -61,6 +63,7 @@ function ScriptModal({ visible, sub, type, onClose }) {
 }
 
 function AddSubModal({ visible, onClose, onSave }) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('💳');
   const [amount, setAmount] = useState('');
@@ -71,7 +74,7 @@ function AddSubModal({ visible, onClose, onSave }) {
   };
 
   const submit = () => {
-    if (!name) return Alert.alert('Enter a service name.');
+    if (!name) return Alert.alert(t('subscriptions.enterName'));
     const db = Object.entries(SUB_DB).find(([k])=>name.toLowerCase().includes(k.toLowerCase()));
     onSave({ name, icon, amount:parseFloat(amount)||0, alternative:db?db[1].alt:null, status:'review', usageLevel:'monthly', previousAmount:null });
     setName(''); setIcon('💳'); setAmount(''); onClose();
@@ -82,8 +85,8 @@ function AddSubModal({ visible, onClose, onSave }) {
       <View style={s.overlay}>
         <ScrollView style={s.sheet} showsVerticalScrollIndicator={false}>
           <View style={s.handle}/>
-          <Text style={s.sheetTitle}>Add subscription</Text>
-          <Text style={s.label}>Quick add</Text>
+          <Text style={s.sheetTitle}>{t('subscriptions.addSubscription')}</Text>
+          <Text style={s.label}>{t('subscriptions.quickAdd')}</Text>
           <View style={s.quickAdd}>
             {Object.entries(SUB_DB).slice(0,8).map(([n,db])=>(
               <TouchableOpacity key={n} style={s.quickChip} onPress={()=>prefill(n)}>
@@ -91,21 +94,21 @@ function AddSubModal({ visible, onClose, onSave }) {
               </TouchableOpacity>
             ))}
           </View>
-          <Text style={s.label}>Service name</Text>
-          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="e.g. Netflix, Gym..." placeholderTextColor={colors.muted}/>
+          <Text style={s.label}>{t('subscriptions.serviceName')}</Text>
+          <TextInput style={s.input} value={name} onChangeText={setName} placeholder={t('subscriptions.servicePlaceholder')} placeholderTextColor={colors.muted}/>
           <Row style={{gap:8}}>
             <View style={{flex:1}}>
-              <Text style={s.label}>Icon</Text>
+              <Text style={s.label}>{t('subscriptions.icon')}</Text>
               <TextInput style={s.input} value={icon} onChangeText={setIcon} maxLength={2} placeholderTextColor={colors.muted}/>
             </View>
             <View style={{flex:2}}>
-              <Text style={s.label}>Monthly cost</Text>
+              <Text>{t('subscriptions.monthlyCost')}</Text>
               <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
             </View>
           </Row>
           <Row style={{gap:8}}>
-            <Button label="Cancel" variant="secondary" style={{flex:1}} onPress={onClose}/>
-            <Button label="Add" variant="primary" style={{flex:1}} onPress={submit}/>
+            <Button label={t('common.cancel')} variant="secondary" style={{flex:1}} onPress={onClose}/>
+            <Button label={t('common.add')} variant="primary" style={{flex:1}} onPress={submit}/>
           </Row>
         </ScrollView>
       </View>
@@ -118,7 +121,8 @@ export default function SubscriptionsScreen({ navigation }) {
   const { fmt } = useComputed();
   const [showAdd, setShowAdd] = useState(false);
   const [scriptModal, setScriptModal] = useState({ visible:false, sub:null, type:'cancel' });
-
+  const { t } = useTranslation();
+  
   const subs = state.subscriptions || [];
   const totalMo = subs.reduce((s,x)=>s+x.amount, 0);
   const savings = subs.filter(x=>x.status==='cancel').reduce((s,x)=>s+x.amount, 0);
@@ -130,9 +134,9 @@ export default function SubscriptionsScreen({ navigation }) {
   const setStatus = (id, status) => dispatch({ type:'SET_SUB_STATUS', payload:{id,status} });
   const setUsage  = (id, level)  => dispatch({ type:'SET_SUB_USAGE',  payload:{id,level}  });
   const deleteSub = (id) => {
-    Alert.alert('Remove subscription?', '', [
-      {text:'Cancel',style:'cancel'},
-      {text:'Remove',style:'destructive',onPress:()=>dispatch({type:'DELETE_SUB',payload:id})}
+    Alert.alert( t('subscriptions.removeTitle'), '', [
+      {text:t('common.cancel'),style:'cancel'},
+      {text:t('common.remove'),style:'destructive',onPress:()=>dispatch({type:'DELETE_SUB',payload:id})}
     ]);
   };
 
@@ -165,35 +169,36 @@ export default function SubscriptionsScreen({ navigation }) {
           </View>
         )}
 
-        <Text style={s.usageLabel}>Usage:</Text>
+        <Text style={s.usageLabel}>{t('subscriptions.usage')}</Text>
         <View style={s.usageRow}>
           {['daily','weekly','monthly','rarely','never'].map(u=>(
-            <TouchableOpacity key={u} onPress={()=>setUsage(sub.id,u)}
+            <TouchableOpacity 
+            key={u} onPress={()=>setUsage(sub.id,u)}
               style={[s.usageChip,{backgroundColor:sub.usageLevel===u?usageColors[u]:'transparent',borderColor:sub.usageLevel===u?usageColors[u]:colors.border}]}>
-              <Text style={[s.usageText,{color:sub.usageLevel===u?'#fff':colors.muted}]}>{u}</Text>
+              <Text style={[s.usageText,{color:sub.usageLevel===u?'#fff':colors.muted}]}>{t(`subscriptions.${u}`)}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
         <View style={s.actionRow}>
           <TouchableOpacity style={[s.statusBtn,sub.status==='keep'&&s.statusBtnActive]} onPress={()=>setStatus(sub.id,'keep')}>
-            <Text style={[s.statusBtnText,sub.status==='keep'&&{color:colors.success}]}>✓ Keep</Text>
+            <Text style={[s.statusBtnText,sub.status==='keep'&&{color:colors.success}]}>{t('subscriptions.keep')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[s.statusBtn,sub.status==='cancel'&&s.statusBtnDanger]} onPress={()=>setStatus(sub.id,'cancel')}>
-            <Text style={[s.statusBtnText,sub.status==='cancel'&&{color:colors.danger}]}>✕ Cancel</Text>
+            <Text style={[s.statusBtnText,sub.status==='cancel'&&{color:colors.danger}]}>{t('subscriptions.cancel')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[s.statusBtn,sub.status==='negotiate'&&s.statusBtnWarn]} onPress={()=>setStatus(sub.id,'negotiate')}>
-            <Text style={[s.statusBtnText,sub.status==='negotiate'&&{color:colors.warning}]}>↕ Negotiate</Text>
+            <Text style={[s.statusBtnText,sub.status==='negotiate'&&{color:colors.warning}]}>{t('subscriptions.negotiateBtn')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={s.actionRow2}>
           {sub.status==='cancel'&&(
-            <Button label="How to cancel →" variant="primary" size="sm" style={{flex:1}}
+            <Button label={t('subscriptions.howToCancel')}  variant="primary" size="sm" style={{flex:1}}
               onPress={()=>setScriptModal({visible:true,sub,type:'cancel'})}/>
           )}
           {sub.status==='negotiate'&&(
-            <Button label="Script →" variant="primary" size="sm" style={{flex:1}}
+            <Button label={t('subscriptions.script')}  variant="primary" size="sm" style={{flex:1}}
               onPress={()=>setScriptModal({visible:true,sub,type:'negotiate'})}/>
           )}
           <Button label="✕" variant="danger" size="sm" onPress={()=>deleteSub(sub.id)}/>
@@ -208,38 +213,38 @@ export default function SubscriptionsScreen({ navigation }) {
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={s.title}>Subscriptions</Text>
-      <Text style={s.sub}>Track every subscription. Kill the ones you don't use.</Text>
+      <Text style={s.title}>{t('subscriptions.title')}</Text>
+      <Text style={s.sub}>{t('subscriptions.subtitle')}</Text>
 
       <View style={s.summaryCard}>
         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
           <View>
-            <Text style={s.summaryLabel}>Total/month</Text>
+            <Text style={s.summaryLabel}>{t('subscriptions.totalMonth')}</Text>
             <Text style={[s.summaryBig,{color:colors.danger}]}>{fmt(totalMo)}</Text>
-            <Text style={{fontSize:10,color:colors.muted}}>{fmt(totalMo*12)}/year</Text>
+            <Text style={{fontSize:10,color:colors.muted}}>{fmt(totalMo*12)}/{t('subscriptions.year')}</Text>
           </View>
           <View style={{alignItems:'flex-end'}}>
-            <Text style={s.summaryLabel}>Potential saving</Text>
-            <Text style={[s.summaryBig,{color:colors.success}]}>{fmt(savings)}/mo</Text>
+            <Text style={s.summaryLabel}>{t('subscriptions.saving')}</Text>
+            <Text style={[s.summaryBig,{color:colors.success}]}> {fmt(savings)}{t('subscriptions.monthShort')}</Text>
           </View>
         </View>
         <View style={{flexDirection:'row',gap:20,marginTop:14}}>
-          {[['Total',subs.length,colors.text],['Cancel',toCancel.length,colors.danger],['Negotiate',toNeg.length,colors.warning],['Review',toReview.length,colors.accent]].map(([l,n,c])=>(
+          {[[t('subscriptions.total'),subs.length,colors.text], [t('subscriptions.cancel'),toCancel.length,colors.danger], [t('subscriptions.negotiate'),toNeg.length,colors.warning], [t('subscriptions.review'),toReview.length,colors.accent]].map(([l,n,c])=>(
             <View key={l}><Text style={{fontSize:10,color:colors.muted}}>{l}</Text><Text style={{fontSize:15,fontWeight:'700',color:c}}>{n}</Text></View>
           ))}
         </View>
       </View>
 
-      <Button label="+ Add subscription" variant="primary" onPress={()=>setShowAdd(true)} style={{marginBottom:16}}/>
+      <Button label={t('subscriptions.add')} variant="primary" onPress={()=>setShowAdd(true)} style={{marginBottom:16}}/>
 
-      {!subs.length && <View style={s.empty}><Text style={{fontSize:36}}>💳</Text><Text style={{color:colors.muted,fontSize:13,marginTop:8,textAlign:'center'}}>No subscriptions tracked yet.{'\n'}Tap + Add to get started.</Text></View>}
+      {!subs.length && <View style={s.empty}><Text style={{fontSize:36}}>💳</Text><Text style={{color:colors.muted,fontSize:13,marginTop:8,textAlign:'center'}}>{t('subscriptions.empty')}</Text></View>}
 
-      {toReview.length>0&&<><SectionTitle>Needs review ({toReview.length})</SectionTitle>{toReview.map(renderSub)}</>}
-      {toCancel.length>0&&<><SectionTitle style={{color:colors.danger}}>Cancel these — saving {fmt(savings)}/mo</SectionTitle>{toCancel.map(renderSub)}</>}
-      {toNeg.length>0&&<><SectionTitle style={{color:colors.warning}}>Negotiate these</SectionTitle>{toNeg.map(renderSub)}</>}
-      {kept.length>0&&<><SectionTitle>Keeping ({kept.length})</SectionTitle>{kept.map(renderSub)}</>}
+      {toReview.length>0&&<><SectionTitle>{t('subscriptions.needReview')} ({toReview.length})</SectionTitle>{toReview.map(renderSub)}</>}
+      {toCancel.length>0&&<><SectionTitle style={{color:colors.danger}}>{t('subscriptions.cancelThese')} {fmt(savings)}/mo</SectionTitle>{toCancel.map(renderSub)}</>}
+      {toNeg.length>0&&<><SectionTitle style={{color:colors.warning}}>{t('subscriptions.negotiateThese')}</SectionTitle>{toNeg.map(renderSub)}</>}
+      {kept.length>0&&<><SectionTitle>{t('subscriptions.keeping')} ({kept.length})</SectionTitle>{kept.map(renderSub)}</>}
 
-      {savings>0&&<TipBox>💡 Cancelling flagged subs saves {fmt(savings*12)}/year.</TipBox>}
+      <TipBox>{t('subscriptions.yearSaving', {amount: fmt(savings * 12)})}</TipBox>
 
       <AddSubModal visible={showAdd} onClose={()=>setShowAdd(false)} onSave={handleAdd}/>
       <ScriptModal {...scriptModal} onClose={()=>setScriptModal({...scriptModal,visible:false})}/>
