@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "FinyWise",
+    "slug": "finywise",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f0f13"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.yourname.finywise",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0f0f13"
+      },
+      "package": "com.yourname.finywise",
+      "versionCode": 1
+    },
+    "plugins": [
+      "expo-localization"
+    ]
+  }
+}
