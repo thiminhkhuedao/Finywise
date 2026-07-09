@@ -26,12 +26,12 @@ src/
     ActivitiesScreen.js
     InsightsScreen.js
     MoreScreen.js
-    RecurringScreen.js   — NEW: Recurring expenses
-    GoalsScreen.js       — NEW: Savings goals
-    SplitScreen.js       — NEW: Bill split
-    ChallengesScreen.js  — NEW: Streaks & challenges
-    ReportScreen.js      — NEW: Monthly report
-    SubscriptionsScreen.js — NEW: Subscription manager
+    RecurringScreen.js   
+    GoalsScreen.js       
+    SplitScreen.js       
+    ChallengesScreen.js  
+    ReportScreen.js      
+    SubscriptionsScreen.js 
 ```
 
 ## Publishing
