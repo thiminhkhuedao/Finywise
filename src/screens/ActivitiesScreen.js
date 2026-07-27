@@ -30,9 +30,9 @@ export default function ActivitiesScreen({ navigation }) {
   };
 
   const completeActivity = (a) => {
-    Alert.alert('Mark as done?', t('activities.mark_done'), t('activities.mark_done_desc'), [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Done', onPress: () => {
+    Alert.alert(t('activities.mark_done'), t('activities.mark_done_desc'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.done'), onPress: () => {
         dispatch({ type: 'UPDATE_ACTIVITY', payload: { id: a.id, status: 'done' } });
         dispatch({ type: 'ADD_TRANSACTION', payload: { id: uid(), date: a.date, desc: a.name, amount: a.cost, categoryId: a.categoryId, type: 'expense' } });
       }},

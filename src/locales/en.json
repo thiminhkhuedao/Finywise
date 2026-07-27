@@ -41,7 +41,9 @@
     "available": "Available this month",
     "streak": "Spending streak",
     "days_under_budget": "days under budget",
-    "health": {"healthy": "Healthy", "caution": "Caution", "risk": "Risk" }
+    "health": {"healthy": "Healthy", "caution": "Caution", "risk": "Risk" }, 
+    "goalReached": "Goal reached!",
+    "savingsProgress" :"Savings goal progress"
   },
 
   "activities": {
@@ -79,6 +81,7 @@
     "uncategorized": "Uncategorized",
     "delete_category": "Delete category?",
     "new_category": "New budget category",
+    "edit_category": "Edit budget category",
     "namePlaceholder": "Name",
     "icon": "Icon",
     "monthly_budget": "Monthly budget",
@@ -329,6 +332,10 @@
   "category": "Category"
   },
 
+  "errors": {
+    "fillTransaction": "Please fill in all fields."
+  },
+
   "decide": {
     "title": "Smart Advisor",
     "subtitle": "Ask FinyWise whether you can afford something right now.",
@@ -366,7 +373,6 @@
     "tight": "Tight — but possible",
     "considerWaiting": "Consider waiting",
     "goodToGo": "Good to go ✓",
-  "notReccomended": "Not recommended",
 
   "overBudget": "You're already over budget by {{amount}}.",
   "cannotAffordMessage": "This costs {{cost}} but you only have {{remaining}} left.",
@@ -466,7 +472,12 @@
     "defaultDescription": "Bill split"
   },
 
-  "language": {
-  "title": "Language"
-   }
+  "nav": {
+    "dashboard": "Dashboard",
+    "budget": "Budget",
+    "goals": "Goals",
+    "decide": "Decide",
+    "subs": "Subs",
+    "more": "More"
+  }
 }

@@ -34,7 +34,7 @@ export default function DecideScreen() {
     const catRem = cat ? cat.allocated - cat.spent : Infinity;
     let v, type, msg;
     if (cost === 0) { v = t('decide.freeTitle'); type='yes'; msg = t('decide.freeMessage'); }
-    else if (availableBalance <= 0) { v = t('decide.notReccomended'); type='no'; msg=  t('decide.overBudget', { amount: fmt(Math.abs(availableBalance))}); }
+    else if (availableBalance <= 0) { v = t('decide.notRecommended'); type='no'; msg=  t('decide.overBudget', { amount: fmt(Math.abs(availableBalance))}); }
     else if (cost > availableBalance) { v = t('decide.cannotAfford'); type='no'; msg=t('decide.cannotAffordMessage', {cost: fmt(cost), remaining: fmt(availableBalance)});}
     else if (cat && cost > catRem) { v = t('decide.categoryLimit'); type='maybe'; msg=t('decide.categoryMessage', { remaining: fmt(catRem), category: cat?.key ? t(`budget.${cat.key}`)  : cat?.name });}
     else if (cost / income > 0.15) { v = t('decide.thinkTwice'); type='maybe'; msg= t('decide.incomeMessage', { cost: fmt(cost) });}
@@ -48,13 +48,13 @@ export default function DecideScreen() {
     let v, type, msg;
     if (price > availableBalance && urgency !== 'urgent') {
       const mo = Math.ceil(price / Math.max(1, savingsAmount));
-      v = t('decide.waitForDrop'); type='no'; msg= t('decide.affordInMonths', {  count: mo, months: mo,});
+      v = t('decide.wait'); type='no'; msg= t('decide.affordInMonths', {  count: mo, months: mo,});
     } else if (price > availableBalance) {
       v = t('decide.tight'); type='maybe'; msg=t('decide.shortBy', {amount: fmt(price - availableBalance),});
     } else if (price / income > 0.3 && urgency === 'flexible') {
       v = t('decide.considerWaiting'); type='maybe'; msg=t('decide.highIncomePercent', { price: fmt(price),   percent: Math.round((price / income) * 100),  });
     } else {
-      v = ('decide.goodToGo'); type='yes'; msg=t('decide.canAffordProduct', { product: purName,  amount: fmt(availableBalance - price), });}
+      v = t('decide.goodToGo'); type='yes'; msg=t('decide.canAffordProduct', { product: purName,  amount: fmt(availableBalance - price), });}
     setResult({ v, type, msg });
   };
 
@@ -66,7 +66,7 @@ export default function DecideScreen() {
     let tip;
     if (canNow && cur <= tgt) tip = t('decide.watch.canNow');
     else if (!canNow && !canTgt) tip = t('decide.watch.cannotTarget', {target: fmt(tgt)  });
-    else if (diff > 0) tip = t('decide.watch.wait', {percent: pct, savings: fmt(diff), advice: canTgt  ? t('decide.watch.affordTarget') : t('decide.watch.keepSaving')  });
+    else if (diff > 0) tip = t('decide.watch.waitForDrop', {percent: pct, savings: fmt(diff), advice: canTgt  ? t('decide.watch.affordTarget') : t('decide.watch.keepSaving')  });
     else tip = t('decide.watch.belowTarget', {  advice: canNow  ? t('decide.watch.buyNow')  : t('decide.watch.almostThere')  });
     dispatch({ type: 'ADD_PRICE_WATCH', payload: { id: uid(), product: pwProd, currentPrice: cur, targetPrice: tgt, store: pwStore||'Any', tip } });
     setPwProd(''); setPwCur(''); setPwTgt(''); setPwStore('');

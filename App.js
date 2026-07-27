@@ -13,6 +13,7 @@ import { colors } from './src/theme';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './src/i18n';
+import { useTranslation } from 'react-i18next';
 
 // Screens (TABS)
 import DashboardScreen from './src/screens/DashboardScreen';
@@ -44,6 +45,7 @@ const TAB_ICONS = {
 };
 
 function CustomTabBar({ state, navigation }) {
+  const { t } = useTranslation();
   return (
     <SafeAreaView
   edges={['bottom']}
@@ -64,13 +66,9 @@ function CustomTabBar({ state, navigation }) {
             activeOpacity={0.7}
             onPress={() => navigation.navigate(route.name)}
           >
-            <Text style={[s.tabIcon, focused && s.tabIconActive]}>
-              {TAB_ICONS[route.name]}
-            </Text>
+            <Text style={[s.tabIcon, focused && s.tabIconActive]}>{TAB_ICONS[route.name]}</Text>
 
-            <Text style={[s.tabLabel, focused && s.tabLabelActive]}>
-              {route.name}
-            </Text>
+            <Text style={[s.tabLabel, focused && s.tabLabelActive]}>{t(`nav.${route.name.toLowerCase()}`)}</Text>
           </TouchableOpacity>
         );
       })}

@@ -62,30 +62,34 @@ function AddCatModal({ visible, onClose, dispatch, state }) {
   );
 }
 
-function EditCatModal({ visible, onClose, dispatch }) {
+function EditCatModal({ budget, onClose, dispatch }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('📦');
   const [amount, setAmount] = useState('');
   const [color, setColor] = useState(COLORS[0]);
-  const [editingBudget, setEditingBudget] = useState(null);
+
+  React.useEffect(() => {
+    if (budget) {
+      setName(budget.name || '');
+      setIcon(budget.icon || '📦');
+      setAmount(budget.allocated != null ? String(budget.allocated) : '');
+      setColor(budget.color || COLORS[0]);
+    }
+  }, [budget]);
+
   const submit = () => {
-    if (!name.trim()) return Alert.alert('Enter a name.');
-    dispatch({ type: 'UPDATE_BUDGET', payload: { id: uid(), name: name.trim(), icon, allocated: parseFloat(amount)||0, spent: 0, color } });
-    setName(''); setIcon('📦'); setAmount(''); onClose();
+    if (!name.trim()) return Alert.alert(t('budget.enter_name'));
+    dispatch({ type: 'UPDATE_BUDGET', payload: { id: budget.id, name: name.trim(), icon, allocated: parseFloat(amount)||0, color } });
+    onClose();
   };
 
-  Alert.alert(
-  t("budget.warning"),
-  t("budget.reviewBudgets")
-);
-
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+    <Modal visible={!!budget} animationType="slide" transparent onRequestClose={onClose}>
       <View style={s.overlay}><View style={s.sheet}>
         <View style={s.handle}/>
-        <Text style={s.sheetTitle}>New budget category</Text>
-        <Input label={t('budget.name')} value={name} onChangeText={setName} placeholder={t('budget.example')}/>
+        <Text style={s.sheetTitle}>{t('budget.edit_category')}</Text>
+        <Input label={t('common.name')} value={name} onChangeText={setName} placeholder={t('budget.example')}/>
         <Row style={{ gap: 10 }}>
           <View style={{ flex: 1 }}><Input label={t('budget.icon')} value={icon} onChangeText={setIcon} maxLength={2}/></View>
           <View style={{ flex: 2 }}><Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
@@ -99,7 +103,7 @@ function EditCatModal({ visible, onClose, dispatch }) {
         </View>
         <Row style={{ gap: 10 }}>
           <Button label={t('common.cancel')} variant="secondary" style={{ flex: 1 }} onPress={onClose}/>
-          <Button label={t('common.add')} style={{ flex: 1 }} onPress={submit}/>
+          <Button label={t('common.save')} style={{ flex: 1 }} onPress={submit}/>
         </Row>
       </View></View>
     </Modal>
@@ -221,9 +225,6 @@ export default function BudgetScreen({ navigation }) {
       {allTx.map(tx => {
         const cat = budgets.find(b => String(b.id) === String(tx.categoryId));
         const label = cat?.key ? t(`budget.${cat.key}`) : cat?.name || t('budget.uncategorized'); 
-        console.log("cat =", cat);
-        console.log("cat.key =", cat?.key);
-        console.log("cat.name =", cat?.name);
         return (
           <View key={tx.id} style={s.txRow}>
             <Row style={{ gap: 11, flex: 1 }}>
@@ -247,6 +248,11 @@ export default function BudgetScreen({ navigation }) {
   onClose={() => setShowAdd(false)}
   dispatch={dispatch}
   state={state}
+/>
+            <EditCatModal
+  budget={editingBudget}
+  onClose={() => setEditingBudget(null)}
+  dispatch={dispatch}
 />
     </ScrollView>
   </SafeAreaView>

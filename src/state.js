@@ -26,8 +26,6 @@ function reducer(state, action) {
     const budgets = (action.payload.budgets || []).map(b => {if (b.key) return b;
     return {  ...b, key: map[b.name] || null,};});
 
-     console.log("Migrated budgets:", budgets);
-
     return { ...action.payload, budgets, loaded: true,};}
 
     case 'RESET':          return { ...initialState, loaded: true };
@@ -146,7 +144,7 @@ const healthScore = (() => {
 })();
   const fmt = (n) => (profile.currency || '€') + Number(n).toFixed(2).replace(/\.00$/, '');
   const pct = (s, t) => !t ? 0 : Math.min(100, Math.round((s / t) * 100));
-  return { totalSpent, totalAllocated, income, availableBalance, savingsAmount, savingsRate, progress, goalAmount, goalProgress, healthScore, r, sr, fmt, pct,};
+  return { totalSpent, totalAllocated, income, availableBalance, savingsAmount, savingsRate, goalAmount, goalProgress, healthScore, r, sr, fmt, pct,};
 }
 
 export function uid() {

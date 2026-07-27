@@ -111,7 +111,6 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
                 <Row style={{ gap: 8 }}>
                   {budgets.map(b => {
-  console.log(b);
 
   return (
     <TouchableOpacity
@@ -157,7 +156,7 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
 export default function DashboardScreen({ navigation }) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
-  const { totalSpent, availableBalance, savingsAmount, goalAmount, goalProgress, healthScore, fmt } = useComputed();
+  const { totalSpent, availableBalance, savingsAmount, goalAmount, goalProgress, healthScore, r, sr, fmt, pct } = useComputed();
   const [showAddTx, setShowAddTx] = useState(false);
   const { profile, budgets, transactions, savingsGoals, streak } = state;
   const recent = [...transactions].sort((a,b) => b.date.localeCompare(a.date)).slice(0,4);

@@ -41,7 +41,9 @@
     "available": "Disponible ce mois-ci",
     "streak": "Série de dépenses",
     "days_under_budget": "jours sous le budget",
-    "health": {"healthy": "Excellent", "caution": "Attention", "risk": "Risque" }
+    "health": {"healthy": "Excellent", "caution": "Attention", "risk": "Risque" },
+    "goalReached": "Objectif atteint",
+    "savingsProgress" :"Progression vers l'objectif d'épargne"
   },
 
   "activities": {
@@ -78,6 +80,7 @@
     "uncategorized": "Non catégorisé",
     "delete_category": "Supprimer la catégorie ?",
     "new_category": "Nouvelle catégorie",
+    "edit_category": "Modifier la catégorie",
     "namePlaceholder": "Nom",
     "icon": "Icône",
     "monthly_budget": "Budget mensuel",
@@ -88,45 +91,11 @@
     "food": "Alimentation",
     "transport": "Transport",
     "fun": "Loisirs", 
-    "freeTitle": "Gratuit",
-  "freeMessage": "Cela ne coûte rien.",
-  "notReccomended": "Déconseillé",
-  "cannotAfford": "Impossible à payer",
-  "categoryLimit": "Limite de catégorie",
-  "thinkTwice": "Réfléchissez-y",
-  "goForIt": "Pourquoi pas",
-  "deleteWarning": "Cette catégorie contient déjà des dépenses. Les supprimer pourrait modifier vos statistiques.",
+    "deleteWarning": "Cette catégorie contient déjà des dépenses. Les supprimer pourrait modifier vos statistiques.",
   "warning": "Attention",
   "overallocated": "Le total de vos budgets dépasse votre revenu mensuel.",
   "reviewBudgets": "Vos catégories ont changé. Pensez à vérifier vos montants budgétaires.",
-  "savingsProgress": "Progression vers votre objectif d'épargne",
-
-  "overBudget": "Vous dépassez déjà votre budget de {{amount}}.",
-  "cannotAffordMessage": "Cela coûte {{cost}} mais il ne vous reste que {{remaining}}.",
-  "categoryMessage": "Il ne reste que {{remaining}} dans {{category}}.",
-  "incomeMessage": "{{cost}} représente plus de 15 % de votre revenu.",
-  "goForItMessage": "Vous pouvez vous le permettre. Il vous restera encore {{remaining}} !",
-
-  "watch": {
-  "canNow": "✓ Vous pouvez déjà vous l'offrir !",
-  "cannotTarget": "Même au prix cible de {{target}}, vous ne pouvez pas encore vous le permettre.",
-  "waitForDrop": "Attendre une baisse de {{percent}} % (économie de {{savings}}). {{advice}}",
-  "affordTarget": "Vous pourrez l'acheter au prix cible.",
-  "keepSaving": "Continuez à économiser.",
-  "belowTarget": "Le prix est au niveau cible ou inférieur. {{advice}}",
-  "buyNow": "Achetez maintenant !",
-  "almostThere": "Vous y êtes presque."
-  },
-  "enterProduct": "Entrez un produit.",
-  "wait": "Attendre",
-  "tight": "Budget serré",
-  "considerWaiting": "Réfléchissez avant d'acheter",
-  "goodToGo": "Vous pouvez l'acheter",
-
-  "affordInMonths": "Vous ne pouvez pas encore acheter cela confortablement. Vous pourrez probablement vous le permettre dans environ {{months}} mois.",
-  "shortBy": "Cet achat est urgent, mais il vous manque {{amount}}.",
-  "highIncomePercent": "{{price}} représente {{percent}} % de votre revenu. Attendre une meilleure offre pourrait être une bonne idée.",
-  "canAffordProduct": "Vous pouvez acheter {{product}}. Il vous restera encore {{amount}}."
+  "savingsProgress": "Progression vers votre objectif d'épargne"
   },
 
   
@@ -298,9 +267,9 @@
   },
 
   "settings": {
-  "title": "Settings",
-  "subtitle": "Customize your FinyWise experience",
-  "language": "Language"
+  "title": "Réglages",
+  "subtitle": "Personnalisez votre expérience FinyWise",
+  "language": "Langue"
   },
 
   "onboarding": {
@@ -402,7 +371,29 @@
     "wait": "Attendez et économisez",
     "tight": "Possible, mais serré",
     "considerWaiting": "Envisagez d'attendre",
-    "goodToGo": "C'est bon ✓"
+    "goodToGo": "C'est bon ✓",
+
+    "overBudget": "Vous dépassez déjà votre budget de {{amount}}.",
+    "cannotAffordMessage": "Cela coûte {{cost}} mais il ne vous reste que {{remaining}}.",
+    "categoryMessage": "Il ne reste que {{remaining}} dans {{category}}.",
+    "incomeMessage": "{{cost}} représente plus de 15 % de votre revenu.",
+    "goForItMessage": "Vous pouvez vous le permettre. Il vous restera encore {{remaining}} !",
+
+    "watch": {
+      "canNow": "✓ Vous pouvez déjà vous l'offrir !",
+      "cannotTarget": "Même au prix cible de {{target}}, vous ne pouvez pas encore vous le permettre.",
+      "waitForDrop": "Attendre une baisse de {{percent}} % (économie de {{savings}}). {{advice}}",
+      "affordTarget": "Vous pourrez l'acheter au prix cible.",
+      "keepSaving": "Continuez à économiser.",
+      "belowTarget": "Le prix est au niveau cible ou inférieur. {{advice}}",
+      "buyNow": "Achetez maintenant !",
+      "almostThere": "Vous y êtes presque."
+    },
+
+    "affordInMonths": "Vous ne pouvez pas encore acheter cela confortablement. Vous pourrez probablement vous le permettre dans environ {{months}} mois.",
+    "shortBy": "Cet achat est urgent, mais il vous manque {{amount}}.",
+    "highIncomePercent": "{{price}} représente {{percent}} % de votre revenu. Attendre une meilleure offre pourrait être une bonne idée.",
+    "canAffordProduct": "Vous pouvez acheter {{product}}. Il vous restera encore {{amount}}."
   },
 
 
@@ -476,9 +467,13 @@
     "defaultDescription": "Partage de dépenses"
   },
 
-
-  "language": {
-    "title": "Langue"
+  "nav": {
+    "dashboard": "Accueil",
+    "budget": "Budget",
+    "goals": "Objectifs",
+    "decide": "Décider",
+    "subs": "Abos",
+    "more": "Plus"
   }
 
 }
