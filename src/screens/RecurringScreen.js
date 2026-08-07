@@ -32,7 +32,7 @@ function RecurringModal({ visible, onClose, onSave, budgets }) {
           <Row>
             <View style={{flex:2}}>
               <Text style={s.label}>{t('split.amount')}</Text>
-              <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder={t('number')} placeholderTextColor={colors.muted}/>
+              <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
             </View>
           </Row>
           <Row style={{gap:8,marginBottom:16}}>

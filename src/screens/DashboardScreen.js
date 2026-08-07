@@ -124,7 +124,7 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
       ]}
       onPress={() => setCatId(catId === b.id ? '' : b.id)}
     >
-      <Text style={{ fontSize:12 }}> {b.key ? t(`budget.${b.key}`) : b.name}</Text>
+      <Text style={{ fontSize:12, color: colors.text }}> {b.key ? t(`budget.${b.key}`) : b.name}</Text>
     </TouchableOpacity>
   );
 })}
@@ -323,7 +323,6 @@ export default function DashboardScreen({ navigation }) {
           <Text style={s.itemName} numberOfLines={1}>
             {transaction.recurring ? ` · ${t('common.recurring')}` : ''}
           </Text>
-
           <Text style={s.itemSub}>
             {cat?.name || t('budget.uncategorized')} · {transaction.date}
           </Text>
@@ -348,7 +347,7 @@ export default function DashboardScreen({ navigation }) {
       <AddTxModal visible={showAddTx} onClose={() => setShowAddTx(false)} budgets={budgets} dispatch={dispatch}/>
         </ScrollView>
   </SafeAreaView>
-);
+);    
 }
 
 const s = StyleSheet.create({
@@ -384,4 +383,5 @@ const s = StyleSheet.create({
   typeBtnText:     { fontSize: 14, color: colors.muted },
   typeBtnTextActive: { color: colors.accent, fontWeight: '500' },
   catChip:         { paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface2, flexDirection: 'row', alignItems: 'center', gap: 6 },
+
 });

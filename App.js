@@ -35,14 +35,7 @@ import SettingsScreen from './src/screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const TAB_ICONS = {
-  Dashboard: '⊞',
-  Budget: '◎',
-  Goals: '🎯',
-  Decide: '✦',
-  Subs: '💳',
-  More: '⋯',
-};
+
 
 function CustomTabBar({ state, navigation }) {
   const { t } = useTranslation();
@@ -66,7 +59,6 @@ function CustomTabBar({ state, navigation }) {
             activeOpacity={0.7}
             onPress={() => navigation.navigate(route.name)}
           >
-            <Text style={[s.tabIcon, focused && s.tabIconActive]}>{TAB_ICONS[route.name]}</Text>
 
             <Text style={[s.tabLabel, focused && s.tabLabelActive]}>{t(`nav.${route.name.toLowerCase()}`)}</Text>
           </TouchableOpacity>
@@ -77,6 +69,7 @@ function CustomTabBar({ state, navigation }) {
 }
 
 function MoreStack() {
+   const { t } = useTranslation();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MoreHome" component={MoreScreen} />

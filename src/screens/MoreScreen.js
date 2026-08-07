@@ -38,6 +38,11 @@ const MENU = [
     sub:'more.insightsSub',
     screen:'Insights'
   },
+  {
+    label:'more.settings',
+    sub:'more.settingsSub',
+    screen: 'Settings'
+  }
 ];
 
 export default function MoreScreen({ navigation }) {
@@ -73,25 +78,6 @@ export default function MoreScreen({ navigation }) {
           <Text style={{ color: colors.muted, fontSize: 18 }}>›</Text>
         </TouchableOpacity>
       ))}
-
-      <TouchableOpacity
-  style={s.menuCard}
-  activeOpacity={0.75}
-  onPress={() => navigation.navigate('Settings')}
->
-  <View style={s.menuIcon}>
-    <Text style={{ fontSize: 20 }}>⚙</Text>
-  </View>
-
-  <View style={{ flex: 1 }}>
-    <Text style={s.menuLabel}>{t('more.settings')}</Text>
-    <Text style={s.menuSub}>{t('more.settingsSub')}</Text>
-  </View>
-
-  <Text style={{ color: colors.muted, fontSize: 18 }}>
-    ›
-  </Text>
-</TouchableOpacity>
 
       <View style={s.divider}/>
       <TouchableOpacity style={s.resetBtn} onPress={resetAll}>

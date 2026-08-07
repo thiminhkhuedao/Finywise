@@ -66,6 +66,7 @@ function AddSubModal({ visible, onClose, onSave }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
+  const [icon, setIcon] = useState('');
 
   const prefill = (n) => {
     const db = SUB_DB[n];
@@ -96,12 +97,9 @@ function AddSubModal({ visible, onClose, onSave }) {
           <Text style={s.label}>{t('subscriptions.serviceName')}</Text>
           <TextInput style={s.input} value={name} onChangeText={setName} placeholder={t('subscriptions.servicePlaceholder')} placeholderTextColor={colors.muted}/>
           <Row style={{gap:8}}>
-            <View style={{flex:1}}>
-              <Text style={s.label}>{t('subscriptions.icon')}</Text>
-            </View>
             <View style={{flex:2}}>
-              <Text>{t('subscriptions.monthlyCost')}</Text>
-              <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
+             <Text style={s.label}>{t('subscriptions.monthlyCost')}</Text>
+             <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0" placeholderTextColor={colors.muted}/>
             </View>
           </Row>
           <Row style={{gap:8}}>
@@ -234,7 +232,7 @@ export default function SubscriptionsScreen({ navigation }) {
 
       <Button label={t('subscriptions.add')} variant="primary" onPress={()=>setShowAdd(true)} style={{marginBottom:16}}/>
 
-      {!subs.length && <View style={s.empty}><Text style={{fontSize:20,fontWeight:'600'}}>{t('subscriptions.title')}</Text><Text style={{color:colors.muted,fontSize:13,marginTop:8,textAlign:'center'}}>{t('subscriptions.empty')}</Text></View>}
+      {!subs.length && <View style={s.empty}><Text style={{color:colors.muted,fontSize:13,marginTop:8,textAlign:'center'}}>{t('subscriptions.empty')}</Text></View>}
 
       {toReview.length>0&&<><SectionTitle>{t('subscriptions.needReview')} ({toReview.length})</SectionTitle>{toReview.map(renderSub)}</>}
       {toCancel.length>0&&<><SectionTitle style={{color:colors.danger}}>{t('subscriptions.cancelThese')} {fmt(savings)}/mo</SectionTitle>{toCancel.map(renderSub)}</>}

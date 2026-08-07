@@ -11,7 +11,6 @@ const COLORS = ['#7c6af7','#4fd1c5','#ed8936','#48bb78','#f56565','#63b3ed','#fc
 function AddCatModal({ visible, onClose, dispatch, state }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState(null);
   const [amount, setAmount] = useState('');
   const [color, setColor] = useState(COLORS[0]);
   const [editingBudget, setEditingBudget] = useState(null);
@@ -27,8 +26,8 @@ function AddCatModal({ visible, onClose, dispatch, state }) {
     t("budget.overallocated")
   );
 }
-    dispatch({ type: 'ADD_BUDGET', payload: { id: uid(), name: name.trim(), icon, allocated: parseFloat(amount)||0, spent: 0, color } });
-    setName(''); setIcon(null); setAmount(''); onClose();
+    dispatch({ type: 'ADD_BUDGET', payload: { id: uid(), name: name.trim(), allocated: parseFloat(amount)||0, spent: 0, color } });
+    setName(''); setAmount(''); onClose();
 
     Alert.alert(
   t("budget.warning"),
@@ -42,15 +41,14 @@ function AddCatModal({ visible, onClose, dispatch, state }) {
         <View style={s.handle}/>
         <Text style={s.sheetTitle}>{t('budget.new_category')}</Text>
         <Input label={t('common.name')} value={name} onChangeText={setName} placeholder={t('budget.namePlaceholder')}/>
-          <View style={{ flex: 1 }}>
-          <Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
-        <Text style={s.label}>{t('budget.color')}</Text>
-        <View style={s.colorRow}>
-          {COLORS.map(c => (
-            <TouchableOpacity key={c} onPress={() => setColor(c)}
-              style={[s.colorChip, { backgroundColor: c }, color===c && s.colorChipActive]}/>
-          ))}
-        </View>
+          <Input label={t('budget.amount')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/>
+           <Text style={s.label}>{t('budget.color')}</Text>
+          <View style={s.colorRow}>
+             {COLORS.map(c => (
+             <TouchableOpacity
+             key={c} onPress={() => setColor(c)} style={[ s.colorChip, { backgroundColor: c }, color === c && s.colorChipActive  ]}/>
+             ))}
+          </View>
         <Row style={{ gap: 10 }}>
           <Button label={t('common.cancel')} variant="secondary" style={{ flex: 1 }} onPress={onClose}/>
           <Button label={t('common.add')} style={{ flex: 1 }} onPress={submit}/>
@@ -88,9 +86,7 @@ function EditCatModal({ budget, onClose, dispatch }) {
         <View style={s.handle}/>
         <Text style={s.sheetTitle}>{t('budget.edit_category')}</Text>
         <Input label={t('common.name')} value={name} onChangeText={setName} placeholder={t('budget.example')}/>
-        <Row style={{ gap: 10 }}>
-          <View style={{ flex: 2 }}><Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
-        </Row>
+        <Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/>
         <Text style={s.label}>{t('budget.color')}</Text>
         <View style={s.colorRow}>
           {COLORS.map(c => (
@@ -125,46 +121,18 @@ export default function BudgetScreen({ navigation }) {
         Alert.alert(
             t("budget.delete_category"),
             t("budget.deleteWarning"),
-            [
-                {
-                    text: t("common.cancel"),
-                    style: "cancel"
-                },
-                {
-                    text: t("common.delete"),
-                    style: "destructive",
-                    onPress: () =>
-                        dispatch({
-                            type: "DELETE_BUDGET",
-                            payload: id
-                        })
-                }
-            ]
+            [{ text: t("common.cancel"), style: "cancel" }, {text: t("common.delete"), style: "destructive", onPress: () => dispatch({ type: "DELETE_BUDGET", payload: id}) }]
         );
-
         return;
     }
 
     Alert.alert(
-        t("budget.delete_category"),
-        "",
-        [
-            {
-                text: t("common.cancel"),
-                style: "cancel"
-            },
-            {
-                text: t("common.delete"),
-                style: "destructive",
-                onPress: () =>
-                    dispatch({
-                        type: "DELETE_BUDGET",
-                        payload: id
-                    })
-            }
+        t("budget.delete_category"), "",
+        [ { text: t("common.cancel"), style: "cancel" },
+          { text: t("common.delete"), style: "destructive", onPress: () =>  dispatch({ type: "DELETE_BUDGET", payload: id }) }
         ]
     );
-};
+  };
 
   const allTx = [...transactions].sort((a,b) => b.date.localeCompare(a.date));
 
@@ -263,7 +231,7 @@ const s = StyleSheet.create({
   sheet:      { backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, paddingBottom: 40 },
   handle:     { width: 36, height: 4, backgroundColor: colors.border, borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
   sheetTitle: { fontSize: 17, fontWeight: '700', color: colors.text, marginBottom: 16 },
-  label:      { fontSize: 12, color: colors.muted, marginBottom: 8 },
+  label:      { fontSize: 12, color: colors.muted, marginBottom: 20 },
   colorRow:   { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
   colorChip:  { width: 32, height: 32, borderRadius: 8 },
   colorChipActive: { borderWidth: 3, borderColor: '#fff' },
