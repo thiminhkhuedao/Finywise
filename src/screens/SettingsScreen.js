@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState } from '../state';
+import { Input, Button, Card } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
 import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +10,29 @@ import { useTranslation } from 'react-i18next';
 export default function SettingsScreen() {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
+
+  const [name, setName] = useState(state.profile.name || '');
+  const [currency, setCurrency] = useState(state.profile.currency || '€');
+  const [income, setIncome] = useState(String(state.profile.monthlyIncome ?? ''));
+  const [savingsGoal, setSavingsGoal] = useState(String(state.profile.savingsGoal ?? ''));
+
+  const currencies = ['€', '$', '£', '¥'];
+
+  const saveProfile = () => {
+    if (!name.trim()) return Alert.alert(t('settings.profile.enterName'));
+
+    dispatch({
+      type: 'SET_PROFILE',
+      payload: {
+        name: name.trim(),
+        currency,
+        monthlyIncome: parseFloat(income) || 0,
+        savingsGoal: parseFloat(savingsGoal) || 0,
+      },
+    });
+
+    Alert.alert(t('settings.profile.saved'));
+  };
 
   const setLanguage = (language) => {
     i18n.changeLanguage(language);
@@ -30,6 +54,46 @@ export default function SettingsScreen() {
       >
         <Text style={s.title}>{t('settings.title')}</Text>
         <Text style={s.sub}>{t('settings.subtitle')}</Text>
+
+        <Text style={s.section}>{t('settings.profile.title')}</Text>
+        <Card>
+          <Input
+            label={t('settings.profile.name')}
+            value={name}
+            onChangeText={setName}
+            placeholder={t('onboarding.namePlaceholder')}
+          />
+
+          <Text style={s.label}>{t('settings.profile.currency')}</Text>
+          <View style={s.currencyRow}>
+            {currencies.map(c => (
+              <TouchableOpacity
+                key={c}
+                style={[s.currencyBtn, currency === c && s.currencyBtnActive]}
+                onPress={() => setCurrency(c)}
+              >
+                <Text style={[s.currencyText, currency === c && s.currencyTextActive]}>{c}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Input
+            label={t('settings.profile.income')}
+            value={income}
+            onChangeText={setIncome}
+            keyboardType="numeric"
+            placeholder="2000"
+          />
+          <Input
+            label={t('settings.profile.savingsGoal')}
+            value={savingsGoal}
+            onChangeText={setSavingsGoal}
+            keyboardType="numeric"
+            placeholder="20"
+          />
+
+          <Button label={t('settings.profile.save')} onPress={saveProfile} style={{ marginTop: 4 }}/>
+        </Card>
 
         <Text style={s.section}>{t('settings.language')}</Text>
 
@@ -104,6 +168,7 @@ const s = StyleSheet.create({
     fontSize: 12,
     color: colors.muted,
     marginBottom: 10,
+    marginTop: 4,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -130,9 +195,10 @@ const s = StyleSheet.create({
   },
 
   label: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.text,
+    fontSize: 12,
+    color: colors.muted,
+    marginBottom: 8,
+    marginTop: 4,
   },
 
   desc: {
@@ -145,5 +211,36 @@ const s = StyleSheet.create({
     fontSize: 20,
     color: colors.accent,
     fontWeight: '700',
+  },
+
+  currencyRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 16,
+  },
+
+  currencyBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    backgroundColor: colors.surface2,
+  },
+
+  currencyBtnActive: {
+    borderColor: colors.accent,
+    backgroundColor: colors.accent + '22',
+  },
+
+  currencyText: {
+    fontSize: 16,
+    color: colors.muted,
+  },
+
+  currencyTextActive: {
+    color: colors.accent,
+    fontWeight: '600',
   },
 });
