@@ -15,8 +15,8 @@ export default function ReportScreen({ navigation }) {
   const inc = profile.monthlyIncome || 1;
   const spent = totalSpent;
   const saved = savingsAmount;
-  const spentR = Math.round(spent/inc*100);
-  const savR = Math.round(saved/inc*100);
+  const spentR = Math.round(spent / inc * 100);
+  const savR = Math.round(saved / inc * 100);
   const cats = budgets.filter(b=>b.spent>0).sort((a,b)=>b.spent-a.spent);
   const txCount = transactions.filter(t=>t.type==='expense').length;
   const avgTx = txCount ? spent/txCount : 0;
@@ -105,7 +105,7 @@ export default function ReportScreen({ navigation }) {
                 return (
                   <View key={b.id} style={{marginBottom:10}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between',marginBottom:4}}>
-                      <Text style={{fontSize:13,color:colors.text}}>{b.icon} {b.key ? t(`budget.${b.key}`) : b.name}</Text>
+                      <Text style={{fontSize:13,color:colors.text}}> {b.key ? t(`budget.${b.key}`) : b.name}</Text>
                       <Text style={{fontSize:12,color:colors.muted}}>{t('report.categoryAmount', {amount: fmt(b.spent), percent: p,})}</Text>
                     </View>
                     <View style={s.progressWrap}>
@@ -119,7 +119,7 @@ export default function ReportScreen({ navigation }) {
 
           {(streak||{}).current > 0 && (
             <View style={s.streakBox}>
-              <Text style={{fontSize:28}}>🔥</Text>
+              <Text style={{fontSize:28}}></Text>
               <View>
               <Text style={{fontSize:13,fontWeight:'600',color:colors.text}}>{t('report.streakTitle', {days: streak.current,})}</Text>
                 <Text style={{fontSize:11,color:colors.muted}}>{t('report.streakSubtitle', {days: streak.current,})}</Text>
@@ -129,7 +129,7 @@ export default function ReportScreen({ navigation }) {
 
           {goalsMet > 0 && (
             <View style={s.goalsBox}>
-              <Text style={{fontSize:24}}>🎯</Text>
+              <Text style={{fontSize:24}}></Text>
               <Text style={{fontSize:13,fontWeight:'600',color:colors.success,marginTop:4}}>{t('report.goalsCompleted', {count: goalsMet,})}</Text>
             </View>
           )}

@@ -124,8 +124,7 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
       ]}
       onPress={() => setCatId(catId === b.id ? '' : b.id)}
     >
-      <Text style={{ fontSize: 14 }}>{b.icon}</Text>
-      <Text style={s.catChipText}>{b.key ? t(`budget.${b.key}`) : b.name}</Text>
+      <Text style={{ fontSize:12 }}> {b.key ? t(`budget.${b.key}`) : b.name}</Text>
     </TouchableOpacity>
   );
 })}
@@ -171,14 +170,14 @@ export default function DashboardScreen({ navigation }) {
       <View style={s.headerRow}>
         <View>
           <Text style={s.greeting}>{t('dashboard.greeting')}</Text>
-          <Text style={s.name}>{profile.name} 👋</Text>
+          <Text style={s.name}>{profile.name}</Text>
         </View>
         <ScoreRing score={healthScore}/>
       </View>
 
       {streak.current >= 2 && (
         <View style={s.streakBanner}>
-          <Text style={{ fontSize: 32 }}>🔥</Text>
+          <Text style={{ fontSize: 32 }}></Text>
           <View>
             <Text style={s.streakLabel}>{t('dashboard.streak')}</Text>
             <Text style={s.streakNum}>{streak.current} 
@@ -261,7 +260,7 @@ export default function DashboardScreen({ navigation }) {
         textAlign: 'center',
       }}
     >
-      🎉 {t('dashboard.goalReached')}
+      {t('dashboard.goalReached')}
     </Text>
   )}
 
@@ -295,9 +294,6 @@ export default function DashboardScreen({ navigation }) {
           return (
             <View key={b.id} style={s.listItem}>
               <Row style={{ gap: 11, flex: 1 }}>
-                <View style={[s.iconBox, { backgroundColor: b.color + '22' }]}>
-                  <Text style={{ fontSize: 17 }}>{b.icon}</Text>
-                </View>
                 <View>
                   <Text style={s.itemName}>{b.key ? t(`budget.${b.key}`) : b.name}</Text>
                   <Text style={s.itemSub}>{fmt(b.spent)} / {fmt(b.allocated)}</Text>
@@ -321,13 +317,11 @@ export default function DashboardScreen({ navigation }) {
   return (
     <View key={transaction.id} style={s.listItem}>
       <Row style={{ gap: 11, flex: 1 }}>
-        <View style={[s.iconBox, { backgroundColor: (cat?.color || '#7c6af7') + '22' }]}>
-          <Text style={{ fontSize: 17 }}>{cat?.icon || '💳'}</Text>
-        </View>
+        <View style={[ { backgroundColor: (cat?.color || '#7c6af7') + '22' }]}></View>
 
         <View style={{ flex: 1 }}>
           <Text style={s.itemName} numberOfLines={1}>
-            {transaction.desc}{transaction.recurring ? ' ↻' : ''}
+            {transaction.recurring ? ` · ${t('common.recurring')}` : ''}
           </Text>
 
           <Text style={s.itemSub}>
@@ -367,7 +361,7 @@ const s = StyleSheet.create({
   headerRow:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 },
   greeting:        { fontSize: 12, color: colors.muted },
   name:            { fontSize: 20, fontWeight: '700', color: colors.text },
-  streakBanner:    { backgroundColor: 'rgba(124,106,247,0.12)', borderWidth: 1, borderColor: 'rgba(124,106,247,0.25)', borderRadius: radius.md, padding: 16, marginBottom: 14, flexDirection: 'row', alignItems: 'center', gap: 14 },
+  streakBanner:    { backgroundColor:'rgba(124,106,247,0.12)', borderWidth:1, borderColor:'rgba(124,106,247,0.25)', borderRadius:radius.md, padding:16, marginBottom:14},
   streakLabel:     { fontSize: 12, color: colors.muted },
   streakNum:       { fontSize: 22, fontWeight: '800', color: colors.accent },
   streakUnit:      { fontSize: 14, fontWeight: '400', color: colors.muted },
@@ -377,7 +371,6 @@ const s = StyleSheet.create({
   balanceMeta:     { fontSize: 10, color: colors.muted },
   balanceMetaVal:  { fontSize: 13, fontWeight: '500', marginTop: 2 },
   listItem:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: colors.border },
-  iconBox:         { width: 36, height: 36, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
   itemName:        { fontSize: 13, fontWeight: '500', color: colors.text },
   itemSub:         { fontSize: 11, color: colors.muted, marginTop: 1 },
   badge:           { paddingHorizontal: 9, paddingVertical: 3, borderRadius: 20 },
@@ -391,5 +384,4 @@ const s = StyleSheet.create({
   typeBtnText:     { fontSize: 14, color: colors.muted },
   typeBtnTextActive: { color: colors.accent, fontWeight: '500' },
   catChip:         { paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface2, flexDirection: 'row', alignItems: 'center', gap: 6 },
-  catChipText:     { fontSize: 12, color: colors.muted },
 });

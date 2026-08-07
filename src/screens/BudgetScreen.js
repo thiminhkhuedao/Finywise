@@ -11,7 +11,7 @@ const COLORS = ['#7c6af7','#4fd1c5','#ed8936','#48bb78','#f56565','#63b3ed','#fc
 function AddCatModal({ visible, onClose, dispatch, state }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('📦');
+  const [icon, setIcon] = useState(null);
   const [amount, setAmount] = useState('');
   const [color, setColor] = useState(COLORS[0]);
   const [editingBudget, setEditingBudget] = useState(null);
@@ -28,7 +28,7 @@ function AddCatModal({ visible, onClose, dispatch, state }) {
   );
 }
     dispatch({ type: 'ADD_BUDGET', payload: { id: uid(), name: name.trim(), icon, allocated: parseFloat(amount)||0, spent: 0, color } });
-    setName(''); setIcon('📦'); setAmount(''); onClose();
+    setName(''); setIcon(null); setAmount(''); onClose();
 
     Alert.alert(
   t("budget.warning"),
@@ -42,10 +42,8 @@ function AddCatModal({ visible, onClose, dispatch, state }) {
         <View style={s.handle}/>
         <Text style={s.sheetTitle}>{t('budget.new_category')}</Text>
         <Input label={t('common.name')} value={name} onChangeText={setName} placeholder={t('budget.namePlaceholder')}/>
-        <Row style={{ gap: 10 }}>
-          <View style={{ flex: 1 }}><Input label={t('budget.icon')} value={icon} onChangeText={setIcon} maxLength={2}/></View>
-          <View style={{ flex: 2 }}><Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
-        </Row>
+          <View style={{ flex: 1 }}>
+          <Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
         <Text style={s.label}>{t('budget.color')}</Text>
         <View style={s.colorRow}>
           {COLORS.map(c => (
@@ -65,14 +63,14 @@ function AddCatModal({ visible, onClose, dispatch, state }) {
 function EditCatModal({ budget, onClose, dispatch }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('📦');
+  const [icon, setIcon] = useState(null);
   const [amount, setAmount] = useState('');
   const [color, setColor] = useState(COLORS[0]);
 
   React.useEffect(() => {
     if (budget) {
       setName(budget.name || '');
-      setIcon(budget.icon || '📦');
+      setIcon(budget.icon || null);
       setAmount(budget.allocated != null ? String(budget.allocated) : '');
       setColor(budget.color || COLORS[0]);
     }
@@ -91,7 +89,6 @@ function EditCatModal({ budget, onClose, dispatch }) {
         <Text style={s.sheetTitle}>{t('budget.edit_category')}</Text>
         <Input label={t('common.name')} value={name} onChangeText={setName} placeholder={t('budget.example')}/>
         <Row style={{ gap: 10 }}>
-          <View style={{ flex: 1 }}><Input label={t('budget.icon')} value={icon} onChangeText={setIcon} maxLength={2}/></View>
           <View style={{ flex: 2 }}><Input label={t('budget.monthly_budget')} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0"/></View>
         </Row>
         <Text style={s.label}>{t('budget.color')}</Text>
@@ -201,15 +198,12 @@ export default function BudgetScreen({ navigation }) {
           <Card style={{ marginBottom: 10 }}>
             <Row style={{ justifyContent: 'space-between', marginBottom: 10 }}>
               <Row style={{ gap: 10, flex: 1 }}>
-                <View style={{ width: 36, height: 36, borderRadius: 9, backgroundColor: b.color+'22', alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontSize: 17 }}>{b.icon}</Text>
-                </View>
                 <View>
                   <Text style={{ fontWeight: '500', fontSize: 13, color: colors.text }}>{b.key ? t(`budget.${b.key}`) : b.name}</Text>
                   <Text style={{ fontSize: 11, color: colors.muted }}>{fmt(b.spent)} of {fmt(b.allocated)}</Text>
                 </View>
               </Row>
-              <Button label="✕" variant="danger" size="sm" onPress={() => deleteCat(b.id)}/>
+              <Button label={t('common.delete')} variant="danger" size="sm" onPress={() => deleteCat(b.id)}/>
             </Row>
             <View style={{ backgroundColor: colors.surface2, borderRadius: 100, height: 7, overflow: 'hidden' }}>
               <View style={{ width: `${p}%`, height: '100%', backgroundColor: barColor, borderRadius: 100 }}/>
@@ -221,18 +215,15 @@ export default function BudgetScreen({ navigation }) {
       })}
 
       <SectionTitle>{t('budget.all_transactions')}</SectionTitle>
-      {!allTx.length && <Empty icon="💳" message={t('budget.no_transactions')}/>}
+      {!allTx.length && <Empty message={t('budget.no_transactions')}/>}
       {allTx.map(tx => {
         const cat = budgets.find(b => String(b.id) === String(tx.categoryId));
         const label = cat?.key ? t(`budget.${cat.key}`) : cat?.name || t('budget.uncategorized'); 
         return (
           <View key={tx.id} style={s.txRow}>
             <Row style={{ gap: 11, flex: 1 }}>
-              <View style={{ width: 36, height: 36, borderRadius: 9, backgroundColor: (cat?.color || '#888') + '22', alignItems: 'center', justifyContent: 'center',}}>
-                <Text style={{ fontSize: 17 }}>{cat?.icon || '💳'}</Text>
-              </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 13, color: colors.text }} numberOfLines={1}>{tx.desc}{tx.recurring ? ' ↻' : ''}</Text>
+                <Text style={{ fontSize: 13, color: colors.text }} numberOfLines={1}>{tx.desc}{tx.recurring ? ` · ${t('common.recurring')}` : ''}</Text>
                 <Text style={{ fontSize: 11, color: colors.muted }}>{label}{' · '}{tx.date} </Text>
               </View>
             </Row>

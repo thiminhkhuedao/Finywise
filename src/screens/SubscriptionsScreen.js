@@ -8,18 +8,18 @@ import { colors, spacing, radius } from '../theme';
 import { useTranslation } from 'react-i18next';
 
 const SUB_DB = {
-  'Netflix':        {icon:'🎬',cat:'Entertainment',alt:'Disney+ (cheaper)'},
-  'Spotify':        {icon:'🎵',cat:'Music',alt:'YouTube Music'},
-  'Disney+':        {icon:'🏰',cat:'Entertainment',alt:'Apple TV+'},
-  'Amazon Prime':   {icon:'📦',cat:'Shopping',alt:'Free delivery on big orders'},
-  'Apple TV+':      {icon:'🍎',cat:'Entertainment',alt:'Disney+ bundle'},
-  'Adobe CC':       {icon:'🎨',cat:'Software',alt:'Affinity Suite (one-time)'},
-  'Microsoft 365':  {icon:'💼',cat:'Software',alt:'LibreOffice (free)'},
-  'Gym':            {icon:'💪',cat:'Health',alt:'Home workout apps'},
-  'NordVPN':        {icon:'🔒',cat:'Software',alt:'Proton VPN free tier'},
-  'iCloud':         {icon:'☁️',cat:'Software',alt:'Google Photos (free)'},
-  'Headspace':      {icon:'🧘',cat:'Health',alt:'Insight Timer (free)'},
-  'Duolingo':       {icon:'🦉',cat:'Education',alt:'Free Duolingo tier'},
+  'Netflix':      { icon:'', cat:'Entertainment', alt:'Disney+ (cheaper)' },
+  'Spotify':      { icon:'', cat:'Music', alt:'YouTube Music' },
+  'Disney+':      { icon:'', cat:'Entertainment', alt:'Apple TV+' },
+  'Amazon Prime': { icon:'', cat:'Shopping', alt:'Free delivery on big orders' },
+  'Apple TV+':    { icon:'', cat:'Entertainment', alt:'Disney+ bundle' },
+  'Adobe CC':     { icon:'', cat:'Software', alt:'Affinity Suite (one-time)' },
+  'Microsoft 365':{ icon:'', cat:'Software', alt:'LibreOffice (free)' },
+  'Gym':          { icon:'', cat:'Health', alt:'Home workout apps' },
+  'NordVPN':      { icon:'', cat:'Software', alt:'Proton VPN free tier' },
+  'iCloud':       { icon:'', cat:'Software', alt:'Google Photos (free)' },
+  'Headspace':    { icon:'', cat:'Health', alt:'Insight Timer (free)' },
+  'Duolingo':     { icon:'', cat:'Education', alt:'Free Duolingo tier' },
 };
 
 const CANCEL_STEPS = [
@@ -65,7 +65,6 @@ function ScriptModal({ visible, sub, type, onClose }) {
 function AddSubModal({ visible, onClose, onSave }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('💳');
   const [amount, setAmount] = useState('');
 
   const prefill = (n) => {
@@ -77,7 +76,7 @@ function AddSubModal({ visible, onClose, onSave }) {
     if (!name) return Alert.alert(t('subscriptions.enterName'));
     const db = Object.entries(SUB_DB).find(([k])=>name.toLowerCase().includes(k.toLowerCase()));
     onSave({ name, icon, amount:parseFloat(amount)||0, alternative:db?db[1].alt:null, status:'review', usageLevel:'monthly', previousAmount:null });
-    setName(''); setIcon('💳'); setAmount(''); onClose();
+    setName(''); setAmount(''); onClose();
   };
 
   return (
@@ -99,7 +98,6 @@ function AddSubModal({ visible, onClose, onSave }) {
           <Row style={{gap:8}}>
             <View style={{flex:1}}>
               <Text style={s.label}>{t('subscriptions.icon')}</Text>
-              <TextInput style={s.input} value={icon} onChangeText={setIcon} maxLength={2} placeholderTextColor={colors.muted}/>
             </View>
             <View style={{flex:2}}>
               <Text>{t('subscriptions.monthlyCost')}</Text>
@@ -152,7 +150,6 @@ export default function SubscriptionsScreen({ navigation }) {
     return (
       <Card key={sub.id} style={[s.subCard,{borderColor:sc+'44'}]}>
         <View style={s.subHeader}>
-          <Text style={{fontSize:26}}>{sub.icon||'💳'}</Text>
           <View style={{flex:1}}>
             <Text style={s.subName}>{sub.name}</Text>
             <Text style={s.subMeta}>{sub.category} · {sub.frequency}</Text>
@@ -165,7 +162,7 @@ export default function SubscriptionsScreen({ navigation }) {
 
         {sub.alternative && (
           <View style={s.altBox}>
-            <Text style={{fontSize:12,color:colors.muted}}>💡 <Text style={{color:colors.accent2,fontWeight:'500'}}>Alternative: </Text>{sub.alternative}</Text>
+            <Text style={{fontSize:12,color:colors.muted}}><Text style={{color:colors.accent2,fontWeight:'500'}}>Alternative: </Text>{sub.alternative}</Text>
           </View>
         )}
 
@@ -188,7 +185,7 @@ export default function SubscriptionsScreen({ navigation }) {
             <Text style={[s.statusBtnText,sub.status==='cancel'&&{color:colors.danger}]}>{t('subscriptions.cancel')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[s.statusBtn,sub.status==='negotiate'&&s.statusBtnWarn]} onPress={()=>setStatus(sub.id,'negotiate')}>
-            <Text style={[s.statusBtnText,sub.status==='negotiate'&&{color:colors.warning}]}>{t('subscriptions.negotiateBtn')}</Text>
+            <Text style={[s.statusBtnText,sub.status==='negotiate'&&{color:colors.warning}]}>{t('subscriptions.negotiate')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -201,7 +198,7 @@ export default function SubscriptionsScreen({ navigation }) {
             <Button label={t('subscriptions.script')}  variant="primary" size="sm" style={{flex:1}}
               onPress={()=>setScriptModal({visible:true,sub,type:'negotiate'})}/>
           )}
-          <Button label="✕" variant="danger" size="sm" onPress={()=>deleteSub(sub.id)}/>
+          <Button label={t('common.delete')} variant="danger" size="sm" onPress={()=>deleteSub(sub.id)}/>
         </View>
       </Card>
     );
@@ -237,7 +234,7 @@ export default function SubscriptionsScreen({ navigation }) {
 
       <Button label={t('subscriptions.add')} variant="primary" onPress={()=>setShowAdd(true)} style={{marginBottom:16}}/>
 
-      {!subs.length && <View style={s.empty}><Text style={{fontSize:36}}>💳</Text><Text style={{color:colors.muted,fontSize:13,marginTop:8,textAlign:'center'}}>{t('subscriptions.empty')}</Text></View>}
+      {!subs.length && <View style={s.empty}><Text style={{fontSize:20,fontWeight:'600'}}>{t('subscriptions.title')}</Text><Text style={{color:colors.muted,fontSize:13,marginTop:8,textAlign:'center'}}>{t('subscriptions.empty')}</Text></View>}
 
       {toReview.length>0&&<><SectionTitle>{t('subscriptions.needReview')} ({toReview.length})</SectionTitle>{toReview.map(renderSub)}</>}
       {toCancel.length>0&&<><SectionTitle style={{color:colors.danger}}>{t('subscriptions.cancelThese')} {fmt(savings)}/mo</SectionTitle>{toCancel.map(renderSub)}</>}

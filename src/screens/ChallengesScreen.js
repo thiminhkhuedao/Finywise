@@ -7,11 +7,11 @@ import { Card, SectionTitle, Button, TipBox } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
 
 const CHALLENGES = [
-  { id:'nospend3', nameKey:'challenges.items.nospend3.name', descKey:'challenges.items.nospend3.desc', icon:'🧘', days:3, reward:'🏅' },
-  { id:'weekend', nameKey:'challenges.items.weekend.name', descKey:'challenges.items.weekend.desc', icon:'🌿', days:2, reward:'🥈' },
-  { id:'cook5', nameKey:'challenges.items.cook5.name', descKey:'challenges.items.cook5.desc', icon:'🍳', days:5, reward:'🥗' },
-  { id:'save10', nameKey:'challenges.items.save10.name', descKey:'challenges.items.save10.desc', icon:'💰', days:30, reward:'🏆' },
-  { id:'budget30', nameKey:'challenges.items.budget30.name', descKey:'challenges.items.budget30.desc', icon:'📊', days:30, reward:'🌟' },
+  { id:'nospend3', nameKey:'challenges.items.nospend3.name', descKey:'challenges.items.nospend3.desc', days:3 },
+  { id:'weekend', nameKey:'challenges.items.weekend.name', descKey:'challenges.items.weekend.desc', days:2 },
+  { id:'cook5', nameKey:'challenges.items.cook5.name', descKey:'challenges.items.cook5.desc', days:5 },
+  { id:'save10', nameKey:'challenges.items.save10.name', descKey:'challenges.items.save10.desc', days:30 },
+  { id:'budget30', nameKey:'challenges.items.budget30.name', descKey:'challenges.items.budget30.desc', days:30 },
 ];
 
 export default function ChallengesScreen({ navigation }) {
@@ -70,7 +70,7 @@ export default function ChallengesScreen({ navigation }) {
 
         {streak.current >= 1 ? (
           <View style={s.streakBanner}>
-            <Text style={s.streakFire}>🔥</Text>
+            <Text style={s.streakFire}></Text>
             <View>
               <Text style={s.streakLabel}>{t('challenges.streak.current')}</Text>
 
@@ -92,8 +92,6 @@ export default function ChallengesScreen({ navigation }) {
 
             <Card style={s.activeCard}>
               <View style={s.challengeHeader}>
-                <Text style={{ fontSize: 32 }}>{activeChallenge.icon}</Text>
-
                 <View style={{ flex: 1 }}>
                   <Text style={s.challengeName}>{t(activeChallenge.nameKey)}</Text>
                   <Text style={s.challengeDesc}>{t(activeChallenge.descKey)}</Text>
@@ -113,14 +111,11 @@ export default function ChallengesScreen({ navigation }) {
                 <Text style={s.progressLabel}>
                   {t('challenges.dayProgress', { daysIn, total: activeChallenge.days})}
                 </Text>
-                <Text style={s.progressLabel}>
-                  {t('challenges.reward', { reward: activeChallenge.reward})}
-                </Text>
               </View>
 
               {daysLeft === 0 ? (
                 <View style={s.completeBox}>
-                  <Text style={{ fontSize: 32 }}>🎉</Text>
+                  <Text style={{ fontSize: 32 }}></Text>
                   <Text style={s.completeText}>
                     {t('challenges.completed', { reward: activeChallenge.reward})}
                   </Text>
@@ -154,10 +149,6 @@ export default function ChallengesScreen({ navigation }) {
         {CHALLENGES.filter(c => c.id !== state.activeChallenge).map(c => (
           <Card key={c.id} style={s.challengeCard}>
             <View style={s.challengeHeader}>
-              <View style={s.challengeIconBox}>
-                <Text style={{ fontSize: 24 }}>{c.icon}</Text>
-              </View>
-
               <View style={{ flex: 1 }}>
                 <Text style={s.challengeName}>
                   {t(c.nameKey)}
@@ -178,7 +169,7 @@ export default function ChallengesScreen({ navigation }) {
                   onPress={() => startChallenge(c.id)}
                 />
               ) : (
-                <Text style={{ fontSize:16 }}>🔒</Text>
+                <Text style={{ fontSize:16 }}> {t('common.locked')}</Text>
               )}
             </View>
           </Card>
@@ -194,8 +185,7 @@ const s = StyleSheet.create({
   scroll: { padding:spacing.xl, paddingBottom:40 },
   title: { fontSize:22, fontWeight:'700', color:colors.text, marginBottom:4 },
   sub: { fontSize:13, color:colors.muted, marginBottom:20, lineHeight:20 },
-  streakBanner: { backgroundColor:'rgba(124,106,247,0.12)', borderWidth:1, borderColor:'rgba(124,106,247,0.25)', borderRadius:radius.md, padding:16, marginBottom:16, flexDirection:'row', alignItems:'center', gap:14 },
-  streakFire: { fontSize:36 },
+  streakBanner: { backgroundColor:'rgba(124,106,247,0.12)', borderWidth:1, borderColor:'rgba(124,106,247,0.25)', borderRadius:radius.md, padding:16, marginBottom:16,},
   streakLabel: { fontSize:12, color:colors.muted },
   streakNum: { fontSize:24, fontWeight:'800', color:colors.accent },
   streakUnit: { fontSize:14, fontWeight:'400', color:colors.muted },
@@ -203,7 +193,6 @@ const s = StyleSheet.create({
   activeCard: { borderColor:colors.accent },
   challengeCard: { marginBottom:10 },
   challengeHeader: { flexDirection:'row', alignItems:'center', gap:12 },
-  challengeIconBox: { width:44, height:44, borderRadius:10, backgroundColor:colors.surface2, alignItems:'center', justifyContent:'center', flexShrink:0 },
   challengeName: { fontSize:14, fontWeight:'600', color:colors.text },
   challengeDesc: { fontSize:12, color:colors.muted, marginTop:2 },
   challengeMeta: { fontSize:11, color:colors.accent, marginTop:4 },

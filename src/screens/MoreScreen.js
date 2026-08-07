@@ -9,37 +9,31 @@ import { useTranslation } from 'react-i18next';
 
 const MENU = [
   {
-    icon:'◈',
     label:'more.activities',
     sub:'more.activitiesSub',
     screen:'Activities'
   },
   {
-    icon:'↻',
     label:'more.recurring',
     sub:'more.recurringSub',
     screen:'Recurring'
   },
   {
-    icon:'⚡',
     label:'more.split',
     sub:'more.splitSub',
     screen:'Split'
   },
   {
-    icon:'🏆',
     label:'more.challenges',
     sub:'more.challengesSub',
     screen:'Challenges'
   },
   {
-    icon:'📊',
     label:'more.report',
     sub:'more.reportSub',
     screen:'Report'
   },
   {
-    icon:'◉',
     label:'more.insights',
     sub:'more.insightsSub',
     screen:'Insights'
@@ -72,9 +66,6 @@ export default function MoreScreen({ navigation }) {
       {MENU.map(m => (
         <TouchableOpacity key={m.screen} style={s.menuCard} activeOpacity={0.75}
           onPress={() => navigation.navigate(m.screen)}>
-          <View style={s.menuIcon}>
-            <Text style={{ fontSize: 20 }}>{m.icon}</Text>
-          </View>
           <View style={{ flex: 1 }}>
             <Text style={s.menuLabel}>{t(m.label)}</Text>
             <Text style={s.menuSub}>{t(m.sub)}</Text>

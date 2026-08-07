@@ -24,8 +24,7 @@ export default function ActivitiesScreen({ navigation }) {
 
   const addActivity = () => {
     if (!name.trim()) return Alert.alert(t('activities.name'));
-    const icons = ['🎯','🎉','🍽️','🎬','🏃','✈️','🛍️','🎸','🏖️','🎮'];
-    dispatch({ type: 'ADD_ACTIVITY', payload: { id: uid(), name: name.trim(), icon: icons[Math.floor(Math.random()*icons.length)], cost: parseFloat(cost)||0, date, notes: notes.trim(), status: 'planned', categoryId: null } });
+    dispatch({ type: 'ADD_ACTIVITY', payload: { id: uid(), name: name.trim(), icon: null, cost: parseFloat(cost)||0, date, notes: notes.trim(), status: 'planned', categoryId: null } });
     setName(''); setCost(''); setNotes(''); setShowAdd(false);
   };
 
@@ -60,7 +59,7 @@ export default function ActivitiesScreen({ navigation }) {
 
       {!items.length && (
   <Empty
-    icon={tab === 'planned' ? '📅' : '✅'} message={  tab === 'planned' ? t('activities.no_planned')  : t('activities.no_done')    }/>)}
+    message={  tab === 'planned'  ? t('activities.no_planned')  : t('activities.no_done') }/>)}
 
       {items.map(a => {
         const cat = budgets.find(b => b.id === a.categoryId);
@@ -68,9 +67,12 @@ export default function ActivitiesScreen({ navigation }) {
           <Card key={a.id} style={{ marginBottom: 10 }}>
             <Row style={{ justifyContent: 'space-between', marginBottom: a.notes ? 8 : 12 }}>
               <Row style={{ gap: 10, flex: 1 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: colors.accent+'22', alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontSize: 20 }}>{a.icon||'🎯'}</Text>
-                </View>
+                <Row style={{ gap: 10, flex: 1 }}>
+                  <View style={{ flex: 1 }}>
+                     <Text style={{ fontWeight: '500', fontSize: 14, color: colors.text }} numberOfLines={1}>  {a.name} </Text>
+                     <Text style={{ fontSize: 11, color: colors.muted }}>  {a.date}{cat ? ' · ' + t(`budget.${cat.key}`) : ''} </Text>
+                  </View>
+                </Row>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontWeight: '500', fontSize: 14, color: colors.text }} numberOfLines={1}>{ a.name}</Text>
                   <Text style={{ fontSize: 11, color: colors.muted }}>{a.date}{cat ? ' · ' + t(`budget.${cat.key}`) : ''}</Text>
@@ -80,7 +82,7 @@ export default function ActivitiesScreen({ navigation }) {
             </Row>
             {a.notes ? <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 12 }}>{a.notes}</Text> : null}
             <Row style={{ gap: 8 }}>
-              {tab === 'planned' && <Button label="✓ Done" variant="success" size="sm" style={{ flex: 1 }} onPress={() => completeActivity(a)}/>}
+              {tab === 'planned' && <Button label={t('activities.done_button')} variant="success" size="sm" style={{ flex: 1 }} onPress={() => completeActivity(a)}/>}
               <Button label={t('activities.delete_button')}  variant="danger" size="sm" style={{ flex: 1 }}
                 onPress={() => { Alert.alert (t('activities.delete_confirm'),'',[ {text:'Cancel',style:'cancel'}, {text:'Delete',style:'destructive',onPress:()=>dispatch({type:'DELETE_ACTIVITY',payload:a.id})} ]); }}/>
             </Row>

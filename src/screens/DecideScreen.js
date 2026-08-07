@@ -85,7 +85,7 @@ export default function DecideScreen() {
       <Text style={s.sub}>{t('decide.subtitle')}</Text>
 
       <View style={s.tabs}>
-        {[['activity','🎯' + t('decide.activity')],['purchase','🛒' + t('decide.purchase')],['price','📈' + t('decide.watchlist')]].map(([t,l]) => (
+        {[ ['activity', t('decide.activity')], ['purchase', t('decide.purchase')], ['price', t('decide.watchlist')]].map(([t,l]) => (
           <TouchableOpacity key={t} style={[s.tab, tab===t&&s.tabActive]} onPress={() => { setTab(t); setResult(null); }}>
             <Text style={[s.tabText, tab===t&&s.tabTextActive]}>{l}</Text>
           </TouchableOpacity>
@@ -112,23 +112,23 @@ export default function DecideScreen() {
               </TouchableOpacity>
             ))}
           </Row>
-          <Button label="Analyze ✦" onPress={analyzePurchase}/>
+          <Button label={t('decide.analyze')}  onPress={analyzePurchase}/>
         </Card>
       )}
 
       {tab === 'price' && (
         <>
           <Card>
-            <Input label={t('decide.productName')} value={pwProd} onChangeText={setPwProd} placeholder="e.g. MacBook Air M3"/>
+            <Input label={t('decide.productName')} value={pwProd} onChangeText={setPwProd} placeholder="MacBook Air M3"/>
             <Row style={{ gap: 10 }}>
               <View style={{ flex: 1 }}><Input label={t('decide.currentPrice')} value={pwCur} onChangeText={setPwCur} keyboardType="numeric" placeholder="0"/></View>
               <View style={{ flex: 1 }}><Input label={t('decide.targetPrice')} value={pwTgt} onChangeText={setPwTgt} keyboardType="numeric" placeholder="0"/></View>
             </Row>
-            <Input label={t('decide.store')} value={pwStore} onChangeText={setPwStore} placeholder="e.g. Amazon, Fnac..."/>
+            <Input label={t('decide.store')} value={pwStore} onChangeText={setPwStore} placeholder="Amazon, Fnac..."/>
             <Button label={t('decide.addWatchlist')} onPress={addPriceWatch}/>
           </Card>
           <SectionTitle>{t('decide.watchlistTitle')}</SectionTitle>
-          {!priceWatchlist.length && ( <Empty icon="📈" message={t('decide.noItems')}/> )}
+          {!priceWatchlist.length && ( <Empty message={t('decide.noItems')}/> )}
           {priceWatchlist.map(p => (
             <Card key={p.id}>
               <Row style={{ justifyContent: 'space-between', marginBottom: 8 }}>

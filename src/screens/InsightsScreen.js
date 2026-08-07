@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
-import { Card, SectionTitle, Button, Empty, TipBox } from '../components/UI';
+import { Card, SectionTitle, Button, Empty } from '../components/UI';
 import { colors, spacing } from '../theme';
 import { useTranslation } from 'react-i18next';
 
@@ -16,11 +16,6 @@ export default function InsightsScreen() {
   const cats   = budgets.filter(b => b.allocated > 0);
   const maxVal = Math.max(...cats.map(b => b.spent), 1);
   const { t } = useTranslation();
-
-  const tips = [];
-  budgets.forEach(b => { const p = pct(b.spent, b.allocated); if (p >= 90) tips.push(t('insights.budgetWarning', {category: b.key ? t(`budget.${b.key}`) : b.name, percent: p,})); });
-  if (savR < profile.savingsGoal) tips.push(t('insights.savingWarning', {current: savR, goal: profile.savingsGoal,}));
-  if (!tips.length) tips.push(t('insights.good'));
 
   const txByDay = {};
   transactions.filter(t => t.type === 'expense').forEach(t => { txByDay[t.date] = (txByDay[t.date]||0) + t.amount; });
@@ -42,7 +37,7 @@ export default function InsightsScreen() {
           [spentR+'%', t('insights.incomeSpent'), spentR>80?colors.danger:spentR>60?colors.warning:colors.text],
           [savR+'%', t('insights.savingGoal', {goal: profile.savingsGoal}), savR>=profile.savingsGoal?colors.success:colors.warning],
           [transactions.length+'', t('insights.transactions'), colors.text],
-          [streak.current+'🔥', t('insights.dayStreak'), colors.accent],
+          [streak.current+'', t('insights.dayStreak'), colors.accent],
         ].map(([n,l,c]) => (
           <View key={l} style={s.statCard}>
             <Text style={[s.statNum, { color: c }]}>{n}</Text>
@@ -62,7 +57,7 @@ export default function InsightsScreen() {
                   <View key={b.id} style={s.barCol}>
                     {b.spent > 0 && <Text style={s.barVal}>{fmt(b.spent)}</Text>}
                     <View style={[s.barBody, { height: h, backgroundColor: b.color }]}/>
-                    <Text style={s.barLbl}>{b.icon}</Text>
+                    <Text style={s.barLbl}> {b.key ? t(`budget.${b.key}`) : b.name}</Text>
                   </View>
                 );
               })}
@@ -101,9 +96,6 @@ export default function InsightsScreen() {
           </Card>
         </>
       )}
-
-      <SectionTitle>{t('insights.smartTips')}</SectionTitle>
-      {tips.map((t, i) => <TipBox key={i}>{t}</TipBox>)}
 
       <Button label={t('insights.reset')} variant="danger" style={{ marginTop: 20 }}
         onPress={() => Alert.alert(t('insights.resetQuestion'),'', [{text: t('common.cancel'),style: 'cancel'}, {text: t('insights.reset'), style: 'destructive',onPress: () => dispatch({ type: 'RESET' })    }])}/>

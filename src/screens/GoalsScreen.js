@@ -7,12 +7,9 @@ import { colors, spacing, radius } from '../theme';
 import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
 
-const GOAL_ICONS = ['✈️','🏠','💻','🎓','🚗','💍','🏖️','🎮','📱','🎸','👗','🌍'];
-
 function AddGoalModal({ visible, onClose, onSave }) {
   const TextInput = require('react-native').TextInput;
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('✈️');
   const [target, setTarget] = useState('');
   const [saved, setSaved] = useState('');
   const { t } = useTranslation();
@@ -20,7 +17,7 @@ function AddGoalModal({ visible, onClose, onSave }) {
   const submit = () => {
     if (!name || !target) return Alert.alert(t('goals.fillFields'));
     const deadline = new Date(Date.now() + 90*24*60*60*1000).toISOString().slice(0,10);
-    onSave({ name, icon, target: parseFloat(target), saved: parseFloat(saved)||0, deadline });
+    onSave({ name, target: parseFloat(target), saved: parseFloat(saved)||0, deadline });
     setName(''); setTarget(''); setSaved(''); onClose();
   };
 
@@ -32,14 +29,7 @@ function AddGoalModal({ visible, onClose, onSave }) {
           <Text style={s.sheetTitle}>{t('goals.newGoal')}</Text>
           <Text style={s.label}>{t('goals.savingFor')}</Text>
           <TextInput style={s.input} value={name} onChangeText={setName} placeholder={t('goals.placeholder')} placeholderTextColor={colors.muted}/>
-          <Text style={s.label}>{t('goals.chooseIcon')}</Text>
           <View style={s.iconGrid}>
-            {GOAL_ICONS.map(i => (
-              <TouchableOpacity key={i} onPress={() => setIcon(i)}
-                style={[s.iconChip, icon===i && s.iconChipActive]}>
-                <Text style={{fontSize:20}}>{i}</Text>
-              </TouchableOpacity>
-            ))}
           </View>
           <Row style={{gap:8}}>
             <View style={{flex:1}}>
@@ -111,7 +101,7 @@ return (
       <Text style={s.sub}>{t('goals.description')}</Text>
       <Button label={t('goals.addGoal')} variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
 
-      {!goals.length && <Empty icon="🎯" message={t('goals.empty')}/>}
+      {!goals.length && <Empty message={t('goals.empty')}/>}
 
       {active.map(g => {
         const p = pct(g.saved, g.target);
@@ -120,7 +110,6 @@ return (
         return (
           <Card key={g.id} style={[s.goalCard, {borderLeftColor: sc}]}>
             <View style={s.goalHeader}>
-              <Text style={{fontSize:28}}>{g.icon}</Text>
               <View style={{flex:1}}>
                 <Text style={s.goalName}>{g.name}</Text>
                 <Text style={s.goalSub}>{g.deadline} · {daysLeft} {t('goals.daysLeft')}</Text>
@@ -144,7 +133,7 @@ return (
 
       {done.length > 0 && (
         <>
-          <SectionTitle>{t('goals.completed')}🎉</SectionTitle>
+          <SectionTitle>{t('goals.completed')}</SectionTitle>
           {done.map(g => (
             <Card key={g.id} style={s.doneCard}>
               <View style={s.goalHeader}>

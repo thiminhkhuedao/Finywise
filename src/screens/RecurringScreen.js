@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppState, useComputed } from '../state';
-import { Card, SectionTitle, Button, Empty, TipBox, Row } from '../components/UI';
+import { Card, SectionTitle, Button, Empty, Row } from '../components/UI';
 import { colors, spacing, radius } from '../theme';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 function RecurringModal({ visible, onClose, onSave, budgets }) {
   const [name, setName] = useState('');
   const { t } = useTranslation();
-  const [icon, setIcon] = useState('↻');
   const [amount, setAmount] = useState('');
   const [freq, setFreq] = useState('monthly'); 
   const [catId, setCatId] = useState('');
@@ -18,8 +17,8 @@ function RecurringModal({ visible, onClose, onSave, budgets }) {
 
   const submit = () => {
     if (!name || !amount) return Alert.alert(t('recurring.fillFields'));
-    onSave({ name, icon, amount: parseFloat(amount), frequency: freq, categoryId: catId || null });
-    setName(''); setIcon('↻'); setAmount(''); onClose();
+    onSave({ name, amount: parseFloat(amount), frequency: freq, categoryId: catId || null });
+    setName(''); setAmount(''); onClose();
   };
 
   return (
@@ -31,10 +30,6 @@ function RecurringModal({ visible, onClose, onSave, budgets }) {
           <Text style={s.label}>{t('common.name')}</Text>
           <TextInput style={s.input} value={name} onChangeText={setName} placeholder={t('recurring.namePlaceholder')} placeholderTextColor={colors.muted}/>
           <Row>
-            <View style={{flex:1,marginRight:8}}>
-              <Text style={s.label}>{t('budget.icon')}</Text>
-              <TextInput style={s.input} value={icon} onChangeText={setIcon} maxLength={2} placeholderTextColor={colors.muted}/>
-            </View>
             <View style={{flex:2}}>
               <Text style={s.label}>{t('split.amount')}</Text>
               <TextInput style={s.input} value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder={t('number')} placeholderTextColor={colors.muted}/>
@@ -89,7 +84,7 @@ export default function RecurringScreen({ navigation }) {
       <Button label={t('recurring.addButton')} variant="primary" onPress={() => setShowAdd(true)} style={{marginBottom:20}}/>
 
       {!state.recurringExpenses?.length && (
-        <Empty icon="↻" message={t('recurring.empty')}/>
+        <Empty message={t('recurring.empty')}/>
       )}
 
       {(state.recurringExpenses || []).map(r => {
@@ -98,9 +93,6 @@ export default function RecurringScreen({ navigation }) {
         return (
           <Card key={r.id} style={{marginBottom:10}}>
             <View style={s.recurRow}>
-              <View style={[s.iconBox, {backgroundColor: (cat?.color||colors.accent)+'22'}]}>
-                <Text style={{fontSize:18}}>{r.icon||'↻'}</Text>
-              </View>
               <View style={{flex:1}}>
                 <Text style={s.recurName}>{r.name}</Text>
                 <Text style={s.recurSub}>{cat?.key ? t(`budget.${cat.key}`)  : t('budget.uncategorized')}  {' · '}{r.frequency}</Text>
@@ -119,8 +111,6 @@ export default function RecurringScreen({ navigation }) {
         );
       })}
 
-      <TipBox>{t('recurring.tip')}</TipBox>
-
       <RecurringModal visible={showAdd} onClose={() => setShowAdd(false)} onSave={handleAdd} budgets={state.budgets}/>
         </ScrollView>
   </SafeAreaView>
@@ -137,7 +127,6 @@ const s = StyleSheet.create({
   title: { fontSize:22, fontWeight:'700', color:colors.text, marginBottom:4 },
   sub: { fontSize:13, color:colors.muted, marginBottom:20, lineHeight:20 },
   recurRow: { flexDirection:'row', alignItems:'center', gap:12, marginBottom:10 },
-  iconBox: { width:40, height:40, borderRadius:10, alignItems:'center', justifyContent:'center' },
   recurName: { fontSize:14, fontWeight:'500', color:colors.text },
   recurSub: { fontSize:11, color:colors.muted, marginTop:2 },
   recurAmt: { fontSize:15, fontWeight:'700' },

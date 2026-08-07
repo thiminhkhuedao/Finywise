@@ -118,7 +118,6 @@ const calcCustom = () => {
           <>
             {people.map((p,i) => (
               <View key={i} style={s.personRow}>
-                <Text style={{fontSize:18,marginRight:8}}>{['😊','😎','🎉','🌟','🔥','💫'][i%6]}</Text>
                 <TextInput style={[s.input,{flex:1,marginBottom:0,marginRight:8}]} value={p.name}
                   onChangeText={v=>{const np=[...people];np[i].name=v;setPeople(np);}}
                   placeholderTextColor={colors.muted}/>
@@ -133,7 +132,7 @@ const calcCustom = () => {
               {people.length>2&&<Button label={t('split.removePerson')} variant="danger" size="sm"
                 onPress={()=>setPeople(people.slice(0,-1))}/>}
             </Row>
-            <Button label={`${t('split.calculate')} →`} variant="primary" onPress={calcCustom}/>
+            <Button label={t('split.calculate')} variant="primary" onPress={calcCustom}/>
           </>
         )}
       </Card>

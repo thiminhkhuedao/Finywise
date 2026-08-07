@@ -31,24 +31,23 @@ const submit = () => {
 
   dispatch({ type: 'SET_PROFILE', payload: profile });
 
-  [
-    ['housing', '🏠', 0.35, '#7c6af7'],
-    ['food', '🍔', 0.15, '#4fd1c5'],
-    ['transport', '🚌', 0.10, '#ed8936'],
-    ['fun', '🎮', 0.10, '#48bb78'],
-  ].forEach(([key, icon, ratio, color]) =>
-    dispatch({
-      type: 'ADD_BUDGET',
-      payload: {
-        id: uid(),
-        key,
-        icon,
-        allocated: inc * ratio,
-        spent: 0,
-        color,
-      },
-    })
-  );
+[
+  ['housing', 0.35, '#7c6af7'],
+  ['food', 0.15, '#4fd1c5'],
+  ['transport', 0.10, '#ed8936'],
+  ['fun', 0.10, '#48bb78'],
+].forEach(([key, ratio, color]) =>
+  dispatch({
+    type: 'ADD_BUDGET',
+    payload: {
+      id: uid(),
+      key,
+      allocated: inc * ratio,
+      spent: 0,
+      color,
+    },
+  })
+);
 };
 
   return (
@@ -58,7 +57,6 @@ const submit = () => {
       showsVerticalScrollIndicator={false}
     >
       <View style={s.hero}>
-        <Text style={s.icon}>✦</Text>
         <Text style={s.title}>{t('onboarding.welcome')}</Text>
         <Text style={s.sub}>{t('onboarding.subtitle')}</Text>
       </View>
