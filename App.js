@@ -164,7 +164,7 @@ const s = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.border,
     paddingTop: 8,
-    paddingBottom: 10,
+    paddingBottom: 30,
     minHeight: 70,
   },
 
