@@ -50,14 +50,33 @@ export default function MoreScreen({ navigation }) {
   const { t } = useTranslation();
 
   const resetAll = () => {
-    Alert.alert(t('more.resetQuestion'),t('more.resetWarning'),
-      {text: t('common.cancel'), style: 'cancel'},
-      {text: t('more.reset'), style: 'destructive', onPress: async () => {
-      await AsyncStorage.clear();
-      dispatch({ type: 'RESET' });
-    }},
-    );
-  };
+  Alert.alert(
+    t('more.resetQuestion'),
+    t('more.resetWarning'),
+    [
+      {
+        text: t('common.cancel'),
+        style: 'cancel',
+      },
+      {
+        text: t('more.reset'),
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('finywise_state_v1');
+            dispatch({ type: 'RESET' });
+          } catch (error) {
+            console.error('Error resetting data:', error);
+            Alert.alert(
+              'Error',
+              'Unable to reset your data. Please try again.'
+            );
+          }
+        },
+      },
+    ]
+  );
+};
 
   return (
   <SafeAreaView style={s.container} edges={['top']}>
