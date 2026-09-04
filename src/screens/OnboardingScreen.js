@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next';
 
 export default function OnboardingScreen({ navigation }) {
   const { dispatch } = useAppState();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = (i18n.language || 'fr').startsWith('en') ? 'en' : 'fr';
   const [name, setName] = useState('');
   const [currency, setCurrency] = useState('€');
   const [income, setIncome] = useState('');
@@ -56,6 +57,20 @@ const submit = () => {
       contentContainerStyle={s.scroll}
       showsVerticalScrollIndicator={false}
     >
+      <View style={s.langRow}>
+        <TouchableOpacity
+          style={[s.langBtn, currentLang === 'fr' && s.langBtnActive]}
+          onPress={() => i18n.changeLanguage('fr')}
+        >
+          <Text style={[s.langText, currentLang === 'fr' && s.langTextActive]}>FR</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[s.langBtn, currentLang === 'en' && s.langBtnActive]}
+          onPress={() => i18n.changeLanguage('en')}
+        >
+          <Text style={[s.langText, currentLang === 'en' && s.langTextActive]}>EN</Text>
+        </TouchableOpacity>
+      </View>
       <View style={s.hero}>
         <Text style={s.title}>{t('onboarding.welcome')}</Text>
         <Text style={s.sub}>{t('onboarding.subtitle')}</Text>
@@ -87,6 +102,11 @@ const s = StyleSheet.create({
   paddingTop: spacing.xl + 8,
   paddingBottom: 40,
 },
+  langRow:             { flexDirection: 'row', justifyContent: 'flex-end', gap: 8, marginBottom: 12 },
+  langBtn:             { paddingVertical: 6, paddingHorizontal: 14, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface2 },
+  langBtnActive:       { borderColor: colors.accent, backgroundColor: colors.accent + '22' },
+  langText:            { fontSize: 12, fontWeight: '600', color: colors.muted },
+  langTextActive:      { color: colors.accent },
   hero:                { alignItems: 'center', marginBottom: 28 },
   icon:                { fontSize: 52, marginBottom: 14 },
   title:               { fontSize: 26, fontWeight: '700', color: colors.text, marginBottom: 8, textAlign: 'center' },
