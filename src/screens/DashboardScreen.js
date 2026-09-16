@@ -45,7 +45,8 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
   const [catId, setCatId] = useState('');
 
   const submit = () => {
-    if (!desc.trim() || !amount)
+    const parsedAmount = parseFloat(amount);
+    if (!desc.trim() || !amount || !Number.isFinite(parsedAmount) || parsedAmount <= 0)
       return Alert.alert(t('errors.fillTransaction'));
 
     dispatch({
@@ -53,7 +54,7 @@ function AddTxModal({ visible, onClose, budgets, dispatch }) {
       payload: {
         id: uid(),
         desc: desc.trim(),
-        amount: parseFloat(amount),
+        amount: parsedAmount,
         date: today(),
         type,
         categoryId: catId || null

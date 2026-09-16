@@ -23,8 +23,14 @@ function reducer(state, action) {
     
     case 'LOAD': {
     const map = {  Housing: 'housing', Food: 'food', Transport: 'transport', Fun: 'fun', Logement: 'housing', Nourriture: 'food', Transport: 'transport', Loisirs: 'fun',};
-    const budgets = (action.payload.budgets || []).map(b => {if (b.key) return b;
-    return {  ...b, key: map[b.name] || null,};});
+    const budgets = (action.payload.budgets || []).map(b => {
+    const clean = {
+      ...b,
+      key: b.key || map[b.name] || null,
+      allocated: Number.isFinite(Number(b.allocated)) ? Number(b.allocated) : 0,
+      spent: Number.isFinite(Number(b.spent)) ? Number(b.spent) : 0,
+    };
+    return clean;});
 
     return { ...action.payload, budgets, loaded: true,};}
 
@@ -33,24 +39,29 @@ function reducer(state, action) {
     case 'ADD_BUDGET':     return { ...state, budgets: [...state.budgets, action.payload] };
     case 'UPDATE_BUDGET':  return { ...state, budgets: state.budgets.map(b => b.id === action.payload.id ? { ...b, ...action.payload } : b) };
     case 'DELETE_BUDGET':  return { ...state, budgets: state.budgets.filter(b => b.id !== action.payload) };
-    case 'ADD_TRANSACTION':
-      const t = action.payload;
+    case 'ADD_TRANSACTION': {
+      const rawAmount = Number(action.payload.amount);
+      if (!Number.isFinite(rawAmount)) return state; // montant invalide : on ignore plutôt que de corrompre le state
+      const t = { ...action.payload, amount: rawAmount };
       return {
         ...state,
         transactions: [...state.transactions, t],
         budgets: t.type === 'expense' && t.categoryId
-          ? state.budgets.map(b => b.id === t.categoryId ? { ...b, spent: b.spent + t.amount } : b)
+          ? state.budgets.map(b => b.id === t.categoryId ? { ...b, spent: Number(b.spent || 0) + t.amount } : b)
           : state.budgets,
       };
-    case 'DELETE_TRANSACTION':
+    }
+    case 'DELETE_TRANSACTION': {
       const tx = state.transactions.find(x => x.id === action.payload);
+      const txAmount = tx ? Number(tx.amount) || 0 : 0;
       return {
         ...state,
         transactions: state.transactions.filter(x => x.id !== action.payload),
         budgets: tx && tx.type === 'expense' && tx.categoryId
-          ? state.budgets.map(b => b.id === tx.categoryId ? { ...b, spent: Math.max(0, b.spent - tx.amount) } : b)
+          ? state.budgets.map(b => b.id === tx.categoryId ? { ...b, spent: Math.max(0, Number(b.spent || 0) - txAmount) } : b)
           : state.budgets,
       };
+    }
     case 'ADD_ACTIVITY':      return { ...state, activities: [...state.activities, action.payload] };
     case 'UPDATE_ACTIVITY':   return { ...state, activities: state.activities.map(a => a.id === action.payload.id ? { ...a, ...action.payload } : a) };
     case 'DELETE_ACTIVITY':   return { ...state, activities: state.activities.filter(a => a.id !== action.payload) };
@@ -110,8 +121,8 @@ export function useAppState() {
 export function useComputed() {
   const { state } = useAppState();
   const { budgets, profile } = state;
-  const totalSpent = budgets.reduce((s, b) => s + b.spent, 0);
-  const totalAllocated = budgets.reduce((s, b) => s + b.allocated, 0);
+  const totalSpent = budgets.reduce((s, b) => s + (Number(b.spent) || 0), 0);
+  const totalAllocated = budgets.reduce((s, b) => s + (Number(b.allocated) || 0), 0);
   const income = profile.monthlyIncome || 0;
   const availableBalance = income - totalSpent;
   const savingsAmount = income - totalSpent;

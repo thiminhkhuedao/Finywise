@@ -16,8 +16,10 @@ function RecurringModal({ visible, onClose, onSave, budgets }) {
   const TextInput = require('react-native').TextInput;
 
   const submit = () => {
-    if (!name || !amount) return Alert.alert(t('recurring.fillFields'));
-    onSave({ name, amount: parseFloat(amount), frequency: freq, categoryId: catId || null });
+    const parsedAmount = parseFloat(amount);
+    if (!name || !amount || !Number.isFinite(parsedAmount) || parsedAmount <= 0)
+      return Alert.alert(t('recurring.fillFields'));
+    onSave({ name, amount: parsedAmount, frequency: freq, categoryId: catId || null });
     setName(''); setAmount(''); onClose();
   };
 
