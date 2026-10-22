@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { StateProvider, useAppState } from './src/state';
+import { PriceRefresherProvider } from './src/priceRefresher';
 import { colors } from './src/theme';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -147,9 +148,11 @@ export default function App() {
         <StatusBar style="light" backgroundColor={colors.bg} />
 
         <StateProvider>
-          <View style={{ flex: 1, backgroundColor: colors.bg }}>
-            <RootNavigator />
-          </View>
+          <PriceRefresherProvider>
+            <View style={{ flex: 1, backgroundColor: colors.bg }}>
+              <RootNavigator />
+            </View>
+          </PriceRefresherProvider>
         </StateProvider>
 
       </SafeAreaProvider>
