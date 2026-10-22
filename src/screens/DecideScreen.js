@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useAppState, useComputed, uid } from '../state';
-import { Card, SectionTitle, Button, Input, Row, Empty } from '../components/UI';
+import { Card, SectionTitle, Button, Input, Row, Empty, Badge } from '../components/UI';
+import { usePriceRefresher } from '../priceRefresher';
+import { normalizeUrl, hostOf, parsePrice } from '../priceScraper';
 import { colors, spacing, radius } from '../theme';
 
 
@@ -20,10 +22,11 @@ export default function DecideScreen() {
   const [purName, setPurName] = useState('');
   const [purPrice, setPurPrice] = useState('');
   const [urgency, setUrgency] = useState('flexible');
+  const [pwUrl, setPwUrl] = useState('');
   const [pwProd, setPwProd] = useState('');
   const [pwCur, setPwCur] = useState('');
   const [pwTgt, setPwTgt] = useState('');
-  const [pwStore, setPwStore] = useState('');
+  const { refresh, refreshing } = usePriceRefresher();
 
   const income = state.profile.monthlyIncome || 1;
 
@@ -59,18 +62,35 @@ export default function DecideScreen() {
   };
 
   const addPriceWatch = () => {
-    const cur = parseFloat(pwCur) || 0, tgt = parseFloat(pwTgt) || 0;
-    if (!pwProd.trim()) return Alert.alert(t('decide.enterProduct'));
-    const diff = cur - tgt, pct = tgt > 0 ? Math.round((diff/cur)*100) : 0;
+    const url = pwUrl.trim() ? normalizeUrl(pwUrl) : null;
+    if (pwUrl.trim() && !url) return Alert.alert(t('decide.invalidUrl'));
+    const cur = parsePrice(pwCur), tgt = parsePrice(pwTgt);
+    if (!tgt) return Alert.alert(t('decide.enterTarget'));
+    if (!url && !pwProd.trim()) return Alert.alert(t('decide.enterProductOrUrl'));
+    if (!url && !cur) return Alert.alert(t('decide.enterCurrent'));
+    const item = {
+      id: uid(),
+      product: pwProd.trim(),
+      url,
+      store: url ? hostOf(url) : '',
+      currentPrice: cur,
+      targetPrice: tgt,
+      lastChecked: null,
+      priceError: false,
+    };
+    dispatch({ type: 'ADD_PRICE_WATCH', payload: item });
+    setPwUrl(''); setPwProd(''); setPwCur(''); setPwTgt('');
+    if (url) refresh([item]);
+    else Alert.alert(t('decide.addedWatchlist'));
+  };
+
+  const watchTip = (cur, tgt) => {
+    const diff = cur - tgt, pct = cur > 0 ? Math.round((diff / cur) * 100) : 0;
     const canNow = cur <= availableBalance, canTgt = tgt <= availableBalance;
-    let tip;
-    if (canNow && cur <= tgt) tip = t('decide.watch.canNow');
-    else if (!canNow && !canTgt) tip = t('decide.watch.cannotTarget', {target: fmt(tgt)  });
-    else if (diff > 0) tip = t('decide.watch.waitForDrop', {percent: pct, savings: fmt(diff), advice: canTgt  ? t('decide.watch.affordTarget') : t('decide.watch.keepSaving')  });
-    else tip = t('decide.watch.belowTarget', {  advice: canNow  ? t('decide.watch.buyNow')  : t('decide.watch.almostThere')  });
-    dispatch({ type: 'ADD_PRICE_WATCH', payload: { id: uid(), product: pwProd, currentPrice: cur, targetPrice: tgt, store: pwStore||'Any', tip } });
-    setPwProd(''); setPwCur(''); setPwTgt(''); setPwStore('');
-    Alert.alert(t('decide.addedWatchlist'));
+    if (canNow && cur <= tgt) return t('decide.watch.canNow');
+    if (!canNow && !canTgt) return t('decide.watch.cannotTarget', { target: fmt(tgt) });
+    if (diff > 0) return t('decide.watch.waitForDrop', { percent: pct, savings: fmt(diff), advice: canTgt ? t('decide.watch.affordTarget') : t('decide.watch.keepSaving') });
+    return t('decide.watch.belowTarget', { advice: canNow ? t('decide.watch.buyNow') : t('decide.watch.almostThere') });
   };
 
   const resultColors = { yes: colors.success, no: colors.danger, maybe: colors.warning };
@@ -119,31 +139,29 @@ export default function DecideScreen() {
       {tab === 'price' && (
         <>
           <Card>
-            <Input label={t('decide.productName')} value={pwProd} onChangeText={setPwProd} placeholder="MacBook Air M3"/>
+            <Input label={t('decide.productUrl')} value={pwUrl} onChangeText={setPwUrl} placeholder="https://www.amazon.fr/..." autoCapitalize="none" autoCorrect={false} keyboardType="url"/>
+            <Input label={t('decide.productNameOptional')} value={pwProd} onChangeText={setPwProd} placeholder="MacBook Air M3"/>
             <Row style={{ gap: 10 }}>
-              <View style={{ flex: 1 }}><Input label={t('decide.currentPrice')} value={pwCur} onChangeText={setPwCur} keyboardType="numeric" placeholder="0"/></View>
               <View style={{ flex: 1 }}><Input label={t('decide.targetPrice')} value={pwTgt} onChangeText={setPwTgt} keyboardType="numeric" placeholder="0"/></View>
+              <View style={{ flex: 1 }}><Input label={t('decide.currentPriceOptional')} value={pwCur} onChangeText={setPwCur} keyboardType="numeric" placeholder="0"/></View>
             </Row>
-            <Input label={t('decide.store')} value={pwStore} onChangeText={setPwStore} placeholder="Amazon, Fnac..."/>
             <Button label={t('decide.addWatchlist')} onPress={addPriceWatch}/>
           </Card>
-          <SectionTitle>{t('decide.watchlistTitle')}</SectionTitle>
+          <Row style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+            <SectionTitle style={{ marginBottom: 0 }}>{t('decide.watchlistTitle')}</SectionTitle>
+            {priceWatchlist.some(p => p.url) && (
+              <Button size="sm" variant="secondary" disabled={refreshing}
+                label={refreshing ? t('decide.refreshing') : t('decide.refresh')}
+                onPress={() => refresh()}/>
+            )}
+          </Row>
+          <View style={{ height: 8 }}/>
           {!priceWatchlist.length && ( <Empty message={t('decide.noItems')}/> )}
           {priceWatchlist.map(p => (
-            <Card key={p.id}>
-              <Row style={{ justifyContent: 'space-between', marginBottom: 8 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontWeight: '500', fontSize: 14, color: colors.text }}>{p.product}</Text>
-                  <Text style={{ fontSize: 11, color: colors.muted }}>{p.store} · Target: {fmt(p.targetPrice)}</Text>
-                </View>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>{fmt(p.currentPrice)}</Text>
-              </Row>
-              <View style={{ backgroundColor: 'rgba(124,106,247,0.07)', borderWidth: 1, borderColor: 'rgba(124,106,247,0.22)', borderRadius: 8, padding: 10 }}>
-                <Text style={{ fontSize: 12, color: colors.muted }}>{p.tip}</Text>
-              </View>
-              <Button label={t('common.delete')} variant="danger" size="sm" style={{ marginTop: 10, alignSelf: 'flex-start' }}
-                onPress={() => dispatch({ type: 'DELETE_PRICE_WATCH', payload: p.id })}/>
-            </Card>
+            <WatchCard key={p.id} p={p} t={t} fmt={fmt} refreshing={refreshing}
+              tip={p.currentPrice != null ? watchTip(p.currentPrice, p.targetPrice) : null}
+              onDelete={() => dispatch({ type: 'DELETE_PRICE_WATCH', payload: p.id })}
+              onSetPrice={(price) => dispatch({ type: 'UPDATE_PRICE_WATCH', payload: { id: p.id, currentPrice: price, priceError: false, lastChecked: Date.now() } })}/>
           ))}
         </>
       )}
@@ -157,6 +175,75 @@ export default function DecideScreen() {
         </ScrollView>
   </SafeAreaView>
 );
+}
+
+function WatchCard({ p, t, fmt, tip, refreshing, onDelete, onSetPrice }) {
+  const [manual, setManual] = useState('');
+  const hasPrice = p.currentPrice != null;
+  const reached = hasPrice && p.targetPrice > 0 && p.currentPrice <= p.targetPrice;
+  const unreadable = !!p.url && !!p.priceError;
+  const checking = !!p.url && refreshing && !hasPrice && !p.priceError;
+  const title = p.product || p.store || p.url;
+
+  const saveManual = () => {
+    const price = parsePrice(manual);
+    if (!price) return;
+    onSetPrice(price);
+    setManual('');
+  };
+
+  return (
+    <Card style={reached ? { borderColor: colors.success + '88' } : null}>
+      <Row style={{ justifyContent: 'space-between', marginBottom: 8, alignItems: 'flex-start' }}>
+        <View style={{ flex: 1, paddingRight: 10 }}>
+          <Text style={{ fontWeight: '500', fontSize: 14, color: colors.text }} numberOfLines={2}>{title}</Text>
+          <Text style={{ fontSize: 11, color: colors.muted, marginTop: 2 }}>
+            {p.store ? p.store + ' · ' : ''}{t('decide.target')} : {fmt(p.targetPrice)}
+          </Text>
+        </View>
+        <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
+          {hasPrice ? fmt(p.currentPrice) : '—'}
+        </Text>
+      </Row>
+
+      {reached ? <Badge variant="success" label={'🎉 ' + t('decide.goalReached')}/>
+        : unreadable ? <Badge variant="warning" label={'⚠️ ' + t('decide.unreadable')}/>
+        : checking ? <Badge label={t('decide.checking')}/>
+        : <Badge label={'⏳ ' + t('decide.waiting')}/>}
+
+      {unreadable && (
+        <Text style={{ fontSize: 12, color: colors.muted, marginTop: 8, lineHeight: 18 }}>
+          {t('decide.unreadableHint')}
+        </Text>
+      )}
+
+      {tip && !unreadable && (
+        <View style={{ backgroundColor: 'rgba(124,106,247,0.07)', borderWidth: 1, borderColor: 'rgba(124,106,247,0.22)', borderRadius: 8, padding: 10, marginTop: 10 }}>
+          <Text style={{ fontSize: 12, color: colors.muted }}>{tip}</Text>
+        </View>
+      )}
+
+      {(unreadable || !p.url) && (
+        <Row style={{ gap: 8, marginTop: 10, alignItems: 'flex-end' }}>
+          <View style={{ flex: 1 }}>
+            <Input label={t('decide.manualPrice')} value={manual} onChangeText={setManual} keyboardType="numeric" placeholder="0"/>
+          </View>
+          <Button label={t('decide.updatePrice')} variant="secondary" size="sm" style={{ marginBottom: 12 }} onPress={saveManual}/>
+        </Row>
+      )}
+
+      {p.lastChecked ? (
+        <Text style={{ fontSize: 11, color: colors.muted, marginTop: 8 }}>
+          {t('decide.lastChecked', { date: new Date(p.lastChecked).toLocaleString() })}
+        </Text>
+      ) : null}
+
+      <Row style={{ gap: 8, marginTop: 10 }}>
+        {p.url ? <Button label={t('decide.openProduct')} variant={reached ? 'success' : 'secondary'} size="sm" onPress={() => Linking.openURL(p.url)}/> : null}
+        <Button label={t('common.delete')} variant="danger" size="sm" onPress={onDelete}/>
+      </Row>
+    </Card>
+  );
 }
 
 const s = StyleSheet.create({
