@@ -48,6 +48,6 @@ eas submit --platform all
 
 ## Copyright
 
-Copyright © 2026 Your Name. All rights reserved.
+Copyright © 2026 Thi Minh Khuê Dao. All rights reserved.
 This project and its source code are public for portfolio viewing purposes only.
 No permission is granted to copy, distribute, modify, or use this code for any other purpose.
